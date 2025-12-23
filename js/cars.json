@@ -1,0 +1,201 @@
+[
+  {
+    "name": "87 Audi Quattro HRY55",
+    "serial": "CW-001",
+    "brand": "Hot Wheels",
+    "series": "Mainline",
+    "Manufacture": "Audi",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Black",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A rally-inspired casting representing Audi’s legendary Quattro.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Arjun",
+    "featuredImage": "",
+    "model": "Audi 90 Quattro",
+    "variantId": "hw-audi-quattro-black",
+    "variantLabel": "Hot Wheels · Audi Quattro · Black",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "87 Audi Quattro",
+    "serial": "CW-002",
+    "brand": "Matchbox",
+    "series": "Collectors",
+    "Manufacture": "Audi",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Blue-Green",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A premium Matchbox interpretation of the classic Audi Quattro.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Karthik",
+    "featuredImage": "",
+    "model": "Audi 90 Quattro",
+    "variantId": "mb-audi-quattro-bluegreen",
+    "variantLabel": "Matchbox · Audi Quattro · Blue-Green",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "Audi 90 Quattro",
+    "serial": "CW-004",
+    "brand": "Majorette",
+    "series": "Premium",
+    "Manufacture": "Audi",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Black-Graphics",
+    "isTreasurehunt": false,
+    "Scale": "1/59",
+    "description": "A Majorette premium casting with detailed racing graphics.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Neha",
+    "featuredImage": "",
+    "model": "Audi 90 Quattro",
+    "variantId": "mj-audi-quattro-black",
+    "variantLabel": "Majorette · Audi Quattro · Black",
+    "ownership": {
+      "quantity": 2,
+      "copies": [{}, {}]
+    }
+  },
+
+  {
+    "name": "64 Chevelle",
+    "serial": "CW-005",
+    "brand": "Greenlight",
+    "series": "Muscle",
+    "Manufacture": "Chevrolet",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Yellow",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A classic American muscle car from Greenlight’s collection.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Rahul",
+    "featuredImage": "",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "Ford Mustang GT",
+    "serial": "CW-007",
+    "brand": "Maisto",
+    "series": "Street",
+    "Manufacture": "Ford",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Red",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A Maisto street-series Mustang GT with clean detailing.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Vikram",
+    "featuredImage": "",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "90 Honda Civic EF",
+    "serial": "CW-015",
+    "brand": "Tomica",
+    "series": "Limited",
+    "Manufacture": "Honda",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Blue",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A Tomica-styled compact hatchback with precise proportions.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Soham",
+    "featuredImage": "",
+    "model": "Honda Civic",
+    "variantId": "tm-honda-civic-ef-blue",
+    "variantLabel": "Tomica · Honda Civic EF · Blue",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "BMW M3 Wagon",
+    "serial": "CW-017",
+    "brand": "Bburago",
+    "series": "Elite",
+    "Manufacture": "BMW",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Red",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A rare BMW M3 Wagon reproduced in Bburago’s Elite range.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Ananya",
+    "featuredImage": "",
+    "ownership": {
+      "quantity": 1
+    }
+  },
+
+  {
+    "name": "DMC DeLorean",
+    "serial": "CW-010",
+    "brand": "Welly",
+    "series": "Retro",
+    "Manufacture": "DMC",
+    "year": 2022,
+    "VehicleType": "Car",
+    "Colour": "Blue-Green",
+    "isTreasurehunt": false,
+    "Scale": "1/64",
+    "description": "A retro-styled DeLorean capturing the iconic wedge design.",
+    "images": [
+      "images/default_placeholder.webp"
+    ],
+    "featured": false,
+    "Gifter": "Rohan",
+    "featuredImage": "",
+    "model": "DMC DeLorean",
+    "variantId": "wl-dmc-delorean-bluegreen",
+    "variantLabel": "Welly · DMC DeLorean · Blue-Green",
+    "ownership": {
+      "quantity": 1
+    }
+  }
+]

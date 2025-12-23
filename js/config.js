@@ -5,7 +5,7 @@ export const APP_CONFIG = {
   // DATA SOURCE
   // -------------------------
   // Can be a local file (cars.json) or a remote URL
-  DATA_SOURCE_URL: "cars.json",
+  DATA_SOURCE_URL: "js/cars.json",
 
   // -------------------------
   // HOME PAGE SECTION TOGGLES

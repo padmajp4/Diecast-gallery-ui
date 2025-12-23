@@ -61,10 +61,9 @@ export function showDetailsModal(car) {
   const hasMultiple = imgs.length > 1;
   let currentIndex = 0;
 
-  /*************** BRAND LOGO (FROM CONFIG) ***************/
-  const brandLogos = APP_CONFIG.brandLogos || {};
-  const brandImg =
-    brandLogos[car.brand] || brandLogos.default || "";
+  /*************** BRAND LOGO (CONFIG SAFE) ***************/
+  const brandLogos = APP_CONFIG.BRAND_LOGOS || {};
+  const brandImg = brandLogos[car.brand] || brandLogos.default || "";
 
   /*************** VARIANTS ***************/
   const variants = getVariants(car);
@@ -84,7 +83,9 @@ export function showDetailsModal(car) {
     <div class="details-inner">
       <div class="details-premium">
 
+        <!-- LEFT -->
         <div class="left-column">
+
           <div class="carousel">
             ${
               imgs[0]
@@ -105,45 +106,61 @@ export function showDetailsModal(car) {
             hasMultiple
               ? `
                 <div class="dots">
-                  ${imgs
-                    .map(
-                      (_, i) =>
-                        `<span class="dot ${
-                          i === 0 ? "active" : ""
-                        }" data-index="${i}"></span>`
-                    )
-                    .join("")}
+                  ${imgs.map((_, i) =>
+                    `<span class="dot ${i === 0 ? "active" : ""}" data-index="${i}"></span>`
+                  ).join("")}
                 </div>
               `
               : ""
           }
 
-          <button id="shareBtn" class="share-btn">
+          <!-- SHARE -->
+          <button
+            id="shareBtn"
+            style="
+              padding:10px 16px;
+              border-radius:10px;
+              font-weight:600;
+              border:1px solid var(--border);
+              background:rgba(255,255,255,0.12);
+              cursor:pointer;
+              width:100%;
+              color:var(--text);
+              margin-top:16px;
+              box-shadow:0 0 10px var(--glow);
+              transition:all .25s ease;
+            "
+          >
             🔗 Share This Car
           </button>
         </div>
 
+        <!-- RIGHT -->
         <div class="right-column">
+
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <h2 class="car-title">${escapeHtml(car.name || "Unnamed Model")}</h2>
-            ${brandImg ? `<img src="${brandImg}" class="brand-logo-under">` : ""}
+            ${
+              brandImg
+                ? `<img src="${brandImg}" class="brand-logo-under" style="height:60px;">`
+                : ""
+            }
           </div>
 
+          <!-- VARIANTS -->
           ${
             hasVariants
               ? `
-                <div class="variant-selector">
-                  ${variants
-                    .map(
-                      v => `
-                    <span class="tag variant-badge ${
-                      v === car ? "active" : ""
-                    }"
-                      data-variant="${escapeAttr(v.variantId)}">
+                <div class="variant-selector" style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap;">
+                  ${variants.map(v => `
+                    <span
+                      class="tag variant-badge ${v === car ? "active" : ""}"
+                      data-variant="${escapeAttr(v.variantId)}"
+                      style="cursor:pointer;${v === car ? "background:var(--accent);color:#fff;" : ""}"
+                    >
                       ${escapeHtml(getFriendlyVariantLabel(v))}
-                    </span>`
-                    )
-                    .join("")}
+                    </span>
+                  `).join("")}
                 </div>
               `
               : ""
@@ -156,6 +173,7 @@ export function showDetailsModal(car) {
             )}</p>
           </div>
 
+          <!-- TAGS -->
           <div class="desc-block">
             <div class="tag-wrap">
               ${isTreasure ? `<span class="tag tag-th">Treasure Hunt</span>` : ""}
@@ -168,16 +186,14 @@ export function showDetailsModal(car) {
               ${tag("Year", car.year)}
               ${tag("Serial", car.serial)}
               ${tag("Gifter", car.Gifter)}
-              ${
-                ownedQty > 1
-                  ? `<span class="tag copies">📦 ${ownedQty} Pieces</span>`
-                  : ""
-              }
+              ${ownedQty > 1 ? `<span class="tag copies">📦 ${ownedQty} Pieces</span>` : ""}
             </div>
           </div>
+
         </div>
       </div>
 
+      <!-- RELATED -->
       <div class="related-section">
         <div class="related-title">
           More ${escapeHtml(car.Manufacture || car.manufacture || "")} Cars
@@ -187,15 +203,23 @@ export function showDetailsModal(car) {
     </div>
   `;
 
-  /*************** SHARE ***************/
+  /*************** SHARE EFFECT ***************/
   const shareBtn = box.querySelector("#shareBtn");
   if (shareBtn) {
     const original = shareBtn.textContent;
     shareBtn.onclick = async () => {
       const url = `${location.origin}?car=${encodeURIComponent(car.name)}`;
       await navigator.clipboard.writeText(url);
+
       shareBtn.textContent = "✔ URL Copied";
-      setTimeout(() => (shareBtn.textContent = original), 1400);
+      shareBtn.style.background = "var(--accent)";
+      shareBtn.style.color = "#fff";
+
+      setTimeout(() => {
+        shareBtn.textContent = original;
+        shareBtn.style.background = "rgba(255,255,255,0.12)";
+        shareBtn.style.color = "var(--text)";
+      }, 1400);
     };
   }
 
@@ -210,25 +234,22 @@ export function showDetailsModal(car) {
     currentIndex = i;
   }
 
-  dots.forEach(dot =>
-    dot.addEventListener("click", () =>
-      showImage(+dot.dataset.index)
-    )
-  );
+  dots.forEach(dot => dot.onclick = () => showImage(+dot.dataset.index));
 
-  box.querySelector("#detailsPrevBtn")?.addEventListener("click", () =>
-    showImage((currentIndex - 1 + imgs.length) % imgs.length)
-  );
-  box.querySelector("#detailsNextBtn")?.addEventListener("click", () =>
-    showImage((currentIndex + 1) % imgs.length)
-  );
+  const prevBtn = box.querySelector("#detailsPrevBtn");
+  if (prevBtn)
+    prevBtn.onclick = () =>
+      showImage((currentIndex - 1 + imgs.length) % imgs.length);
+
+  const nextBtn = box.querySelector("#detailsNextBtn");
+  if (nextBtn)
+    nextBtn.onclick = () =>
+      showImage((currentIndex + 1) % imgs.length);
 
   /*************** VARIANT SWITCH ***************/
   box.querySelectorAll(".variant-badge").forEach(badge => {
     badge.onclick = () => {
-      const selected = variants.find(
-        v => v.variantId === badge.dataset.variant
-      );
+      const selected = variants.find(v => v.variantId === badge.dataset.variant);
       if (selected) showDetailsModal(selected);
     };
   });
@@ -253,7 +274,7 @@ export function showDetailsModal(car) {
         const div = document.createElement("div");
         div.className = "related-item";
         div.innerHTML = `
-          <img src="${escapeAttr(rc.images?.[0] || "")}">
+          <img src="${escapeAttr(rc.image || rc.images?.[0] || "")}">
           <div class="related-name">${escapeHtml(rc.name)}</div>
         `;
         div.onclick = () => showDetailsModal(rc);
