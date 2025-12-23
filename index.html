@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+  <title>Diecast Collection Dashboard</title>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="Diecast Collection Dashboard">
+  <meta name="description"
+        content="A beautifully designed diecast dashboard featuring multiple brands, filters, detailed views, and collectible highlights.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Diecast Collection Dashboard">
+  <meta property="og:description"
+        content="Explore a diecast collection with galleries, filters, and rich UI interactions.">
+  <meta property="og:image" content="assets/og-image.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Diecast Collection Dashboard">
+  <meta name="twitter:description"
+        content="A frontend-only diecast car collection UI.">
+  <meta name="twitter:image" content="assets/og-image.webp">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+
+</head>
+
+<body class="dark">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+<div class="sidebar-top">
+  <a href="/" aria-label="Go to home">
+    <img src="images/logo.png" class="sidebar-logo" alt="Logo">
+  </a>
+</div>
+
+  <div class="menu-wrapper">
+    <div class="menu">
+      <div class="menu-item active" data-view="home" id="menu-home">🏠 Home</div>
+      <div class="menu-item" data-view="all" id="menu-all">🚗 Garage</div>
+      <div class="menu-item" data-view="exchange" id="menu-exchange">🔁 Exchange</div>
+      <div class="menu-item" data-view="about" id="menu-about">📚 Diecast History</div>
+      <div class="menu-item" data-view="aboutme" id="menu-aboutme">👤 About Me</div>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="theme-toggle-wrapper">
+      <div class="theme-toggle" id="themeToggle">☀️</div>
+      <div class="theme-label">Light / Dark</div>
+    </div>
+  </div>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content" id="appContent">
+
+  <!-- HOME -->
+  <section id="view-home" class="view">
+      <!-- Home hero, stats, brands, recent rendered by home.js -->
+  </section>
+
+  <!-- FULL CARS -->
+  <section id="view-all" class="view" style="display:none;">
+
+    <div class="cars-page">
+
+      <!-- GRID -->
+      <div class="cars-grid-container">
+        <div id="allCarsContainer" class="cars-grid"></div>
+      </div>
+
+   <!-- =====================================================
+           FILTER PANEL
+           👉 Logic in allCars.js
+           ===================================================== -->
+
+      <!-- FILTER PANEL -->
+      <aside class="filters-panel">
+
+        <div class="filters-top">
+          <div class="filters-stack">
+            <input id="searchBarALL" placeholder="Search...">
+            <select id="filterManufactureALL"><option value="">Manufacturer</option></select>
+            <select id="filterBrandALL"><option value="">Brand</option></select>
+            <select id="filterSeriesALL"><option value="">Series</option></select>
+            <select id="allSort">
+              <option value="serial_desc">Serial (desc)</option>
+              <option value="serial_asc">Serial (asc)</option>
+              <option value="name_asc">Name (A–Z)</option>
+            </select>
+            <button id="resetBtnALL" class="small-btn">Reset ❌</button>
+          </div>
+        </div>
+
+        <div class="filters-bottom">
+          <div class="pagination-mini">
+            <button class="ghost-btn" id="prevPage">◀</button>
+            <div id="paginationSummary" class="pagination-summary">Page 1 of 1</div>
+            <button class="ghost-btn" id="nextPage">▶</button>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </section>
+
+  <!-- EXCHANGE PAGE -->
+<section id="view-exchange" class="view" style="display:none;">
+  <div class="exchange-page">
+    <div class="exchange-header glass-panel">
+      <h2>Available for Exchange</h2>
+  <p>
+  These are models with multiple copies available.
+  This section demonstrates grouping and filtering for exchange-ready items.
+  </p>
+    </div>
+    <div id="exchangeGrid" class="cars-grid"></div>
+  </div>
+</section>
+
+
+  <!-- ABOUT PAGE -->
+  <section id="view-about" class="view" style="display:none;">
+
+    <div class="about-layout">
+
+      <!-- LEFT SIDE — HISTORY SECTION -->
+      <div class="about-content glass-panel">
+
+        <h2>Diecast History</h2>
+        <p>
+          Diecast cars began in the early 20th century when manufacturers started exploring metal casting
+          for miniature vehicles. Over the decades, diecast evolved from simple toys into highly detailed
+          collectibles admired by enthusiasts worldwide.
+        </p>
+
+        <p>
+          Brands like Hot Wheels, Matchbox, Majorette, Tomica, Maisto, and Greenlight have each shaped the
+          culture of diecast collecting with unique casting styles, themes, and special series.
+        </p>
+
+        <h3>Why Collect Diecast Cars?</h3>
+        <ul>
+          <li>They capture real automotive design in miniature form.</li>
+          <li>Huge variety: JDM, muscle cars, trucks, exotics, classics, fantasy models.</li>
+          <li>Special series like Treasure Hunts and Super Treasure Hunts create excitement.</li>
+          <li>Affordable and long-lasting hobby with great display value.</li>
+        </ul>
+
+        <h3>Major Brands</h3>
+        <p>Some of the most iconic brands in diecast are:</p>
+        <ul>
+          <li><strong>Hot Wheels</strong> — Fantasy castings, licensed cars, TH/STH models.</li>
+          <li><strong>Matchbox</strong> — Real-life vehicles and highly accurate designs.</li>
+          <li><strong>Tomica</strong> — Premium Japanese realism and functional parts.</li>
+          <li><strong>Majorette</strong> — European styling with opening doors and suspension.</li>
+          <li><strong>Maisto</strong> — Accessible large-scale models.</li>
+          <li><strong>Greenlight</strong> — Premium replicas with rubber tires and true-to-life details.</li>
+        </ul>
+
+        <p>
+          Today, diecast collecting is more popular than ever, with limited releases, premium lines, 
+          collaborations, and collector conventions keeping the community active worldwide.
+        </p>
+      </div>
+
+      <!-- RIGHT SIDE — TIMELINE -->
+      <aside class="about-timeline glass-panel">
+        <h3 class="timeline-title">Diecast Timeline</h3>
+
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/hotwheels.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">1968</div>
+              <div class="timeline-text">Hot Wheels launches and transforms diecast culture.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/tomica.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">1970s</div>
+              <div class="timeline-text">Tomica expands globally with ultra-realistic JDM castings.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/matchbox.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">1980s</div>
+              <div class="timeline-text">Matchbox becomes the standard for realism.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/hotwheels.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">1995</div>
+              <div class="timeline-text">Treasure Hunts make collecting explode worldwide.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/majorette.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">2000s</div>
+              <div class="timeline-text">Majorette rises with opening features and Euro styling.</div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <img src="brands/greenlight.png" class="timeline-icon">
+            <div class="timeline-content">
+              <div class="timeline-year">2020s</div>
+              <div class="timeline-text">Premium realism dominates — rubber tires, metal bases, deep detail.</div>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+   <!-- =====================================================
+       ABOUT / HISTORY VIEW
+       👉 Static content — safe to edit text
+       ===================================================== -->
+
+  <!-- ABOUT ME PAGE -->
+<section id="view-aboutme" class="view" style="display:none;">
+  <div class="aboutme-wrapper">
+
+    <img src="images/profile.jpg" alt="Profile" class="aboutme-pic">
+
+    <h1 class="aboutme-title">About Me</h1>
+
+    <p class="aboutme-text">
+      A frontend-only diecast collection dashboard built with a focus on clean UI, filtering, responsive layouts, and 
+      automation-friendly workflows. Originally created as a hobby project.
+    </p>
+
+    <div class="aboutme-section">
+      <h2>Hobbies</h2>
+      <p class="aboutme-text">
+        This project touches on areas such as model collecting, UI and tool design, automation workflows, and multimedia content 
+        creation.
+      </p>
+    </div>
+
+    <div class="aboutme-section">
+      <h2>Connect</h2>
+
+      <div class="aboutme-socials">
+
+        <a href="https://www.instagram.com/<youruserId>/" target="_blank" aria-label="Instagram">
+          <img
+            src="https://cdn.simpleicons.org/instagram/000000"
+            data-dark="https://cdn.simpleicons.org/instagram/ffffff"
+            alt="Instagram">
+        </a>
+
+        <a href="https://www.youtube.com/<youruserId>/" target="_blank" aria-label="YouTube">
+          <img
+            src="https://cdn.simpleicons.org/youtube/000000"
+            data-dark="https://cdn.simpleicons.org/youtube/ffffff"
+            alt="YouTube">
+        </a>
+
+        <a href="https://github.com/<youruserId>" target="_blank" aria-label="GitHub">
+          <img
+            src="https://cdn.simpleicons.org/github/000000"
+            data-dark="https://cdn.simpleicons.org/github/ffffff"
+            alt="GitHub">
+        </a>
+
+        <a href="https://<youruserId>/" target="_blank" aria-label="Blog">
+          <img
+            src="https://cdn.simpleicons.org/rss/000000"
+            data-dark="https://cdn.simpleicons.org/rss/ffffff"
+            alt="Blog">
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- MAIN DETAILS MODAL -->
+<div id="overlay" class="overlay" onclick="if(event.target.id==='overlay') window.modalClose?.()">
+  <div class="details-box">
+    <div id="modalCloseBtn" class="close-btn">✖</div>
+    <div id="details"></div>
+  </div>
+</div>
+
+<!-- GIFTER POPUP MODAL -->
+<div id="gifterOverlay" class="overlay" onclick="if(event.target.id==='gifterOverlay') closeGifterModal()">
+  <div class="details-box">
+    <div class="close-btn" onclick="closeGifterModal()">✖</div>
+    <div id="gifterModalContent"></div>
+  </div>
+</div>
+
+<!-- =====================================================
+     BACKGROUND DECORATION
+     👉 Replace images or remove entirely
+     ===================================================== -->
+
+<!-- BACKGROUND IMAGES -->
+<div class="bg-container">
+  <img src="images/bg-light.png" class="corner-img light-img" alt="">
+  <img src="images/bg-dark.png" class="corner-img dark-img" alt="">
+</div>
+
+<!-- =====================================================
+     FOOTER
+     👉 Replace name / text as needed
+     ===================================================== -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+© <span id="year"></span>&nbsp;Your Name| Made with 💻 & ☕
+</footer>
+
+<!-- =====================================================
+     SCRIPTS
+     👉 Do not change order
+     ===================================================== -->
+
+<!-- SCRIPTS -->
+<script type="module" src="js/theme.js"></script>
+<script type="module" src="js/modal.js"></script>
+<script type="module" src="js/home.js"></script>
+<script type="module" src="js/allCars.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
