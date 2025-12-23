@@ -5,7 +5,7 @@ export const APP_CONFIG = {
   // DATA SOURCE
   // -------------------------
   // Can be a local file (cars.json) or a remote URL
-  DATA_SOURCE_URL: "https://raw.githubusercontent.com/padmajp4/Diecast-gallery/main/cars.json",
+  DATA_SOURCE_URL: "cars.json",
 
   // -------------------------
   // HOME PAGE SECTION TOGGLES
