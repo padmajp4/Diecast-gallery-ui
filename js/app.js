@@ -199,3 +199,24 @@ async function boot() {
 window.showDetails = car => showDetailsModal(car);
 
 boot();
+
+/********************************************
+ * MOBILE APP NAV LOGIC (PUBLIC)
+ ********************************************/
+function syncPublicMobileIcons(){
+  const dark=document.body.classList.contains("dark");
+  document.querySelectorAll("#mobileAppNav img").forEach(img=>{
+    img.src = dark ? img.dataset.dark : img.dataset.light;
+  });
+}
+syncPublicMobileIcons();
+window.addEventListener("themeChanged", syncPublicMobileIcons);
+
+document.querySelectorAll("#mobileAppNav .app-tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll("#mobileAppNav .app-tab").forEach(x=>x.classList.remove("active"));
+    tab.classList.add("active");
+    const menu=document.getElementById(tab.dataset.menu);
+    if(menu) menu.click();
+  });
+});

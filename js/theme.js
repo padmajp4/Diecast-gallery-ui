@@ -5,6 +5,8 @@ export function toggleTheme(){
   setTimeout(()=>btn.classList.remove('spin'),360);
   document.body.classList.toggle('dark');
   btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+
+  window.dispatchEvent(new Event("themeChanged"));
 }
 
 // wire to global so inline fallback or other modules can call
@@ -16,3 +18,13 @@ export function initTheme(){
   if(!btn) return;
   btn.addEventListener('click', toggleTheme);
 }
+
+function syncAllThemedIcons(){
+  const dark=document.body.classList.contains("dark");
+  document.querySelectorAll("img[data-light][data-dark]").forEach(img=>{
+    img.src = dark ? img.dataset.dark : img.dataset.light;
+  });
+}
+syncAllThemedIcons();
+window.addEventListener("themeChanged",syncAllThemedIcons);
+
