@@ -1,6 +1,3 @@
-// js/modal.js
-import { APP_CONFIG } from "./config.js";
-
 /***************************************************
  * INIT MODAL
  ***************************************************/
@@ -61,9 +58,21 @@ export function showDetailsModal(car) {
   const hasMultiple = imgs.length > 1;
   let currentIndex = 0;
 
-  /*************** BRAND LOGO (CONFIG SAFE) ***************/
-  const brandLogos = APP_CONFIG.BRAND_LOGOS || {};
-  const brandImg = brandLogos[car.brand] || brandLogos.default || "";
+  /*************** BRAND LOGO ***************/
+  const brandLogos = {
+    "Hot Wheels": "assets/brands/hotwheels.png",
+    "Matchbox": "assets/brands/matchbox.png",
+    "Majorette": "assets/brands/majorette.png",
+    "Tomica": "assets/brands/tomica.png",
+    "Maisto": "assets/brands/maisto.png",
+    "Greenlight": "assets/brands/greenlight.png",
+    "Bburago": "assets/brands/bburago.png",
+    "Welly": "assets/brands/welly.png",
+    "Kinsmart": "assets/brands/kinsmart.png",
+    "CCA": "assets/brands/cca.png",
+    default: "assets/brands/default.png"
+  };
+  const brandImg = brandLogos[car.brand] || brandLogos.default;
 
   /*************** VARIANTS ***************/
   const variants = getVariants(car);
@@ -82,10 +91,7 @@ export function showDetailsModal(car) {
   box.innerHTML = `
     <div class="details-inner">
       <div class="details-premium">
-
-        <!-- LEFT -->
         <div class="left-column">
-
           <div class="carousel">
             ${
               imgs[0]
@@ -114,10 +120,7 @@ export function showDetailsModal(car) {
               : ""
           }
 
-          <!-- SHARE -->
-          <button
-            id="shareBtn"
-            style="
+          <button id="shareBtn" style="
               padding:10px 16px;
               border-radius:10px;
               font-weight:600;
@@ -128,36 +131,25 @@ export function showDetailsModal(car) {
               color:var(--text);
               margin-top:16px;
               box-shadow:0 0 10px var(--glow);
-              transition:all .25s ease;
-            "
-          >
+              transition:all .25s ease;">
             🔗 Share This Car
           </button>
         </div>
 
-        <!-- RIGHT -->
         <div class="right-column">
-
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <h2 class="car-title">${escapeHtml(car.name || "Unnamed Model")}</h2>
-            ${
-              brandImg
-                ? `<img src="${brandImg}" class="brand-logo-under" style="height:60px;">`
-                : ""
-            }
+            <img src="${brandImg}" class="brand-logo-under" style="height:60px;">
           </div>
 
-          <!-- VARIANTS -->
           ${
             hasVariants
               ? `
                 <div class="variant-selector" style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap;">
                   ${variants.map(v => `
-                    <span
-                      class="tag variant-badge ${v === car ? "active" : ""}"
+                    <span class="tag variant-badge ${v === car ? "active" : ""}"
                       data-variant="${escapeAttr(v.variantId)}"
-                      style="cursor:pointer;${v === car ? "background:var(--accent);color:#fff;" : ""}"
-                    >
+                      style="cursor:pointer;${v === car ? "background:var(--accent);color:#fff;" : ""}">
                       ${escapeHtml(getFriendlyVariantLabel(v))}
                     </span>
                   `).join("")}
@@ -168,12 +160,9 @@ export function showDetailsModal(car) {
 
           <div class="desc-block">
             <div class="desc-title">DESCRIPTION</div>
-            <p class="desc-text">${escapeHtml(
-              car.description || "No description available."
-            )}</p>
+            <p class="desc-text">${escapeHtml(car.description || "No description available.")}</p>
           </div>
 
-          <!-- TAGS -->
           <div class="desc-block">
             <div class="tag-wrap">
               ${isTreasure ? `<span class="tag tag-th">Treasure Hunt</span>` : ""}
@@ -189,11 +178,9 @@ export function showDetailsModal(car) {
               ${ownedQty > 1 ? `<span class="tag copies">📦 ${ownedQty} Pieces</span>` : ""}
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- RELATED -->
       <div class="related-section">
         <div class="related-title">
           More ${escapeHtml(car.Manufacture || car.manufacture || "")} Cars
@@ -203,18 +190,15 @@ export function showDetailsModal(car) {
     </div>
   `;
 
-  /*************** SHARE EFFECT ***************/
   const shareBtn = box.querySelector("#shareBtn");
   if (shareBtn) {
     const original = shareBtn.textContent;
     shareBtn.onclick = async () => {
       const url = `${location.origin}?car=${encodeURIComponent(car.name)}`;
       await navigator.clipboard.writeText(url);
-
       shareBtn.textContent = "✔ URL Copied";
       shareBtn.style.background = "var(--accent)";
       shareBtn.style.color = "#fff";
-
       setTimeout(() => {
         shareBtn.textContent = original;
         shareBtn.style.background = "rgba(255,255,255,0.12)";
@@ -223,9 +207,19 @@ export function showDetailsModal(car) {
     };
   }
 
-  /*************** CAROUSEL ***************/
   const imgEl = box.querySelector("#detailsMainImg");
   const dots = box.querySelectorAll(".dot");
+
+  /* 📱 Swipe */
+  if (window.innerWidth <= 800 && imgEl) {
+    let startX = 0;
+    imgEl.addEventListener("touchstart", e => (startX = e.touches[0].clientX), { passive: true });
+    imgEl.addEventListener("touchend", e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (dx > 40) showImage((currentIndex - 1 + imgs.length) % imgs.length);
+      else if (dx < -40) showImage((currentIndex + 1) % imgs.length);
+    });
+  }
 
   function showImage(i) {
     if (!imgs[i] || !imgEl) return;
@@ -234,19 +228,14 @@ export function showDetailsModal(car) {
     currentIndex = i;
   }
 
-  dots.forEach(dot => dot.onclick = () => showImage(+dot.dataset.index));
+  dots.forEach(dot => (dot.onclick = () => showImage(+dot.dataset.index)));
+  box.querySelector("#detailsPrevBtn")?.addEventListener("click", () =>
+    showImage((currentIndex - 1 + imgs.length) % imgs.length)
+  );
+  box.querySelector("#detailsNextBtn")?.addEventListener("click", () =>
+    showImage((currentIndex + 1) % imgs.length)
+  );
 
-  const prevBtn = box.querySelector("#detailsPrevBtn");
-  if (prevBtn)
-    prevBtn.onclick = () =>
-      showImage((currentIndex - 1 + imgs.length) % imgs.length);
-
-  const nextBtn = box.querySelector("#detailsNextBtn");
-  if (nextBtn)
-    nextBtn.onclick = () =>
-      showImage((currentIndex + 1) % imgs.length);
-
-  /*************** VARIANT SWITCH ***************/
   box.querySelectorAll(".variant-badge").forEach(badge => {
     badge.onclick = () => {
       const selected = variants.find(v => v.variantId === badge.dataset.variant);
@@ -254,34 +243,44 @@ export function showDetailsModal(car) {
     };
   });
 
-  /*************** RELATED ***************/
   const rail = box.querySelector("#relatedRail");
   const section = box.querySelector(".related-section");
 
   if (window.ALL_CARS && rail && section) {
     rail.innerHTML = "";
     const manu = (car.Manufacture || car.manufacture || "").toLowerCase();
-
-    const related = window.ALL_CARS.filter(
-      c =>
-        (c.Manufacture || c.manufacture || "").toLowerCase() === manu &&
-        c !== car
+    const related = window.ALL_CARS.filter(c =>
+      (c.Manufacture || c.manufacture || "").toLowerCase() === manu && c !== car
     );
-
     if (!related.length) section.style.display = "none";
-    else
-      related.slice(0, 50).forEach(rc => {
-        const div = document.createElement("div");
-        div.className = "related-item";
-        div.innerHTML = `
-          <img src="${escapeAttr(rc.image || rc.images?.[0] || "")}">
-          <div class="related-name">${escapeHtml(rc.name)}</div>
-        `;
-        div.onclick = () => showDetailsModal(rc);
-        rail.appendChild(div);
-      });
+    else related.slice(0, 50).forEach(rc => {
+      const div = document.createElement("div");
+      div.className = "related-item";
+      div.innerHTML = `
+        <img src="${escapeAttr(rc.image || rc.images?.[0] || "")}">
+        <div class="related-name">${escapeHtml(rc.name)}</div>
+      `;
+      div.onclick = () => showDetailsModal(rc);
+      rail.appendChild(div);
+    });
   }
 
   overlay.style.display = "flex";
   document.body.style.overflow = "hidden";
+}
+
+/***************************************************
+ * 📱 MOBILE — AUTO CLOSE DETAILS ON MENU TAP
+ ***************************************************/
+if (window.innerWidth <= 800) {
+  document.addEventListener("click", e => {
+    const dockTap = e.target.closest(".menu-item, .dock-item");
+    if (!dockTap) return;
+    const overlay = document.getElementById("overlay");
+    if (overlay && overlay.style.display === "flex") {
+      modalClose();
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  }, true);
 }
