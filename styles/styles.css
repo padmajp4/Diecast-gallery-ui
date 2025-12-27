@@ -3037,3 +3037,135 @@ body.theme-morph .mobile-dock {
     -webkit-backdrop-filter: blur(14px) saturate(160%);
   }
 }
+
+/***************************************************
+ * 📱 MOBILE — DETAILS MODAL APP OPTIMIZATION
+ ***************************************************/
+@media (max-width:800px){
+
+  /* Modal sheet style */
+  #details{
+    width:100% !important;
+    height:100vh !important;
+    max-height:100vh !important;
+    border-radius:18px 18px 0 0 !important;
+    padding:12px 14px 18px !important;
+  }
+
+  .details-premium{
+    padding:46px 0 16px !important;
+    gap:16px !important;
+  }
+
+  /* Stack columns tightly */
+  .left-column,
+  .right-column{
+    gap:14px !important;
+  }
+
+  /* Image card = app style */
+  .carousel{
+    height:32vh !important;
+    max-height:260px !important;
+    border-radius:14px !important;
+  }
+
+  .carousel img{
+    border-radius:12px !important;
+  }
+
+  /* Title smaller */
+  .car-title{
+    font-size:1.2rem !important;
+    line-height:1.4rem !important;
+    margin-bottom:6px !important;
+  }
+
+  /* Brand logo */
+  .brand-logo-under{
+    height:36px !important;
+  }
+
+  /* Description card */
+  .desc-block{
+    padding:12px !important;
+    border-radius:12px !important;
+  }
+
+  .desc-title{
+    font-size:0.72rem !important;
+  }
+
+  .desc-text{
+    font-size:0.85rem !important;
+    line-height:1.45 !important;
+  }
+
+  /* Tags = pill chips */
+  .tag{
+    font-size:0.7rem !important;
+    padding:4px 8px !important;
+    border-radius:999px !important;
+    box-shadow:none !important;
+  }
+
+  /* Share button */
+  #shareBtn{
+    padding:10px !important;
+    border-radius:12px !important;
+    font-size:.85rem !important;
+    margin-top:10px !important;
+  }
+
+  /* Related rail compact */
+  .related-title{
+    font-size:1rem !important;
+  }
+
+  .related-item{
+    min-width:120px !important;
+    max-width:120px !important;
+    height:170px !important;
+  }
+
+  .related-item img{
+    height:90px !important;
+  }
+
+  .related-name{
+    font-size:.75rem !important;
+  }
+}
+
+/***************************************************
+ * 📱 MOBILE — SAFE AREA ABOVE BOTTOM DOCK
+ ***************************************************/
+@media (max-width:800px){
+
+  #details{
+    padding-bottom: 84px !important;   /* dock breathing space */
+  }
+
+  /* also push related rail slightly up */
+  .related-section{
+    margin-bottom: 20px !important;
+  }
+}
+
+/***************************************************
+ * 📱 MOBILE — LIFT MODAL ABOVE DOCK (REAL FIX)
+ ***************************************************/
+@media (max-width:800px){
+
+  #overlay{
+    align-items: flex-start !important;
+    padding-top: 8px !important;
+  }
+
+  #details{
+    height: calc(100vh - 90px) !important;   /* dock clearance */
+    max-height: calc(100vh - 90px) !important;
+    margin-top: 6px !important;
+    margin-bottom: 90px !important;          /* physical gap */
+  }
+}
