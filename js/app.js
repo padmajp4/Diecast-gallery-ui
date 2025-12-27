@@ -220,3 +220,10 @@ document.querySelectorAll("#mobileAppNav .app-tab").forEach(tab=>{
     if(menu) menu.click();
   });
 });
+
+
+/********************************************
+ * MOBILE THEME FLOAT BUTTON FIX
+ ********************************************/
+const fab = document.getElementById("mobileThemeFab");
+if (fab) fab.onclick = () => document.getElementById("themeToggle")?.click();

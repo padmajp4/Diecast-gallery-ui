@@ -187,7 +187,7 @@ const totalCars = list.reduce((sum, car) => {
                 <div class="card home-recent-card">
                   <div class="home-recent-image-wrap">
                     <img src="${img}" alt="${escapeHtml(car.name || '')}">
-                    ${isTH(car) ? `<img src="images/th.png" class="th-logo">` : ''}
+                    ${isTH(car) ? `<img src="assets/th.png" class="th-logo">` : ''}
                   </div>
                   <div class="card-title">${escapeHtml(car.name || '')}</div>
                 </div>`;
@@ -444,7 +444,7 @@ function renderTreasureHunts(list) {
         <div class="th-item">
           <div class="th-img-wrap">
             <img src="${img}" class="th-img" alt="${escapeHtml(car.name || '')}">
-            <img src="images/th.png" class="th-logo th-logo-small" alt="Treasure Hunt">
+            <img src="assets/th.png" class="th-logo th-logo-small" alt="Treasure Hunt">
           </div>
           <p class="th-name">${escapeHtml(car.name || '')}</p>
         </div>
@@ -525,7 +525,7 @@ function renderTopGifters(cars) {
             </span>
           </div>
 
-          <img src="gifters/giftericon-${i + 1}.png"
+          <img src="assets/gifters/giftericon-${i + 1}.png"
                class="gifter-icon"
                style="
                  width:130px;

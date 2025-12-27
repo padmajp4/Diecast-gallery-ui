@@ -45,17 +45,17 @@ export const APP_CONFIG = {
   debugMode: false,
 
  BRAND_LOGOS: {
-    "Hot Wheels": "brands/hotwheels.png",
-    "Matchbox": "brands/matchbox.png",
-    "Majorette": "brands/majorette.png",
-    "Tomica": "brands/tomica.png",
-    "Maisto": "brands/maisto.png",
-    "Greenlight": "brands/greenlight.png",
-    "Jada": "brands/jada.png",
-    "Welly": "brands/welly.png",
-    "Kinsmart": "brands/kinsmart.png",
-    "CCA": "brands/cca.png",
-    default: "brands/default.png"
+    "Hot Wheels": "assets/brands/hotwheels.png",
+    "Matchbox": "assets/brands/matchbox.png",
+    "Majorette": "assets/brands/majorette.png",
+    "Tomica": "assets/brands/tomica.png",
+    "Maisto": "assets/brands/maisto.png",
+    "Greenlight": "assets/brands/greenlight.png",
+    "Jada": "assets/brands/jada.png",
+    "Welly": "assets/brands/welly.png",
+    "Kinsmart": "assets/brands/kinsmart.png",
+    "CCA": "assets/brands/cca.png",
+    default: "assets/brands/default.png"
   }
 ,
 

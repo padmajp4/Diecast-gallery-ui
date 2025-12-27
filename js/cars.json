@@ -8,11 +8,11 @@
     "year": 2022,
     "VehicleType": "Car",
     "Colour": "Black",
-    "isTreasurehunt": false,
+    "isTreasurehunt": true,
     "Scale": "1/64",
     "description": "A rally-inspired casting representing Audi’s legendary Quattro.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Arjun",
@@ -38,7 +38,7 @@
     "Scale": "1/64",
     "description": "A premium Matchbox interpretation of the classic Audi Quattro.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Karthik",
@@ -64,7 +64,7 @@
     "Scale": "1/59",
     "description": "A Majorette premium casting with detailed racing graphics.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Neha",
@@ -91,7 +91,7 @@
     "Scale": "1/64",
     "description": "A classic American muscle car from Greenlight’s collection.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Rahul",
@@ -114,7 +114,7 @@
     "Scale": "1/64",
     "description": "A Maisto street-series Mustang GT with clean detailing.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Vikram",
@@ -137,7 +137,7 @@
     "Scale": "1/64",
     "description": "A Tomica-styled compact hatchback with precise proportions.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Soham",
@@ -163,7 +163,7 @@
     "Scale": "1/64",
     "description": "A rare BMW M3 Wagon reproduced in Bburago’s Elite range.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Ananya",
@@ -186,7 +186,7 @@
     "Scale": "1/64",
     "description": "A retro-styled DeLorean capturing the iconic wedge design.",
     "images": [
-      "images/default_placeholder.webp"
+      "assets/default_placeholder.webp"
     ],
     "featured": false,
     "Gifter": "Rohan",

@@ -2935,3 +2935,105 @@ body:not(.dark) {
   .content{padding-bottom:90px;}
   .site-footer{display:none !important;}
 }
+
+/***************************************************
+ * 📱 MOBILE THEME FAB
+ ***************************************************/
+#mobileThemeFab { display:none; }
+
+@media (max-width:800px){
+  #mobileThemeFab {
+    display:flex;
+    position:fixed;
+    right:14px;
+    bottom:72px;         /* sits above dock */
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    align-items:center;
+    justify-content:center;
+    background: rgba(255,45,45,.9);
+    color:#fff;
+    font-size:22px;
+    box-shadow:0 0 14px var(--glow);
+    z-index:9999;
+    cursor:pointer;
+  }
+}
+
+/***************************************************
+ * 🌗 THEME MORPH ANIMATION
+ ***************************************************/
+body {
+  transition:
+    background-color .45s ease,
+    color .35s ease,
+    filter .35s ease;
+}
+
+/* animate all glass panels */
+.glass-panel,
+.sidebar,
+.details-box,
+.site-footer,
+.mobile-dock {
+  transition:
+    background .45s ease,
+    backdrop-filter .45s ease,
+    box-shadow .45s ease;
+}
+
+/* soft fade while switching */
+body.theme-morph {
+  filter: brightness(.95) contrast(.95);
+}
+
+/***************************************************
+ * 🖥️ DESKTOP SIDEBAR ICON MENU
+ ***************************************************/
+.side-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin-right: 12px;
+}
+
+/* align icon + text */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* glow on active */
+.menu-item.active .side-icon {
+  filter: drop-shadow(0 0 8px var(--glow));
+  transform: scale(1.1);
+}
+
+/* hide labels on mobile (dock used instead) */
+@media (max-width:800px){
+  .side-label { display:none; }
+}
+
+/* Lock UI during theme morph to prevent repaint blink */
+body.theme-morph .sidebar,
+body.theme-morph .mobile-dock {
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity .15s ease;
+}
+
+/* Hide ONLY CookieYes floating revisit badge */
+.cky-btn-revisit-wrapper {
+  display: none !important;
+}
+
+/* Theme-aware mobile dock (diecast site) */
+@media (max-width:800px){
+  .mobile-dock{
+    background: var(--card) !important;
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+}
