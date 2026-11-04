@@ -1,0 +1,23 @@
+{
+  "name": "diecast-gallery",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A fast, good-looking gallery for your diecast car collection — Cloudflare Pages + Workers + D1, no framework.",
+  "license": "MIT",
+  "scripts": {
+    "demo": "wrangler pages dev public --port 8788",
+    "dev": "wrangler dev --config worker/wrangler.toml --local --port 8787 --var SITE_URL:http://localhost:8787 --var ORIGIN_URL:http://localhost:8788",
+    "db:schema": "wrangler d1 execute diecast-db --remote --config worker/wrangler.toml --file db/schema.sql",
+    "db:seed": "wrangler d1 execute diecast-db --remote --config worker/wrangler.toml --file db/seed.sql",
+    "db:schema:local": "wrangler d1 execute diecast-db --local --config worker/wrangler.toml --file db/schema.sql",
+    "db:seed:local": "wrangler d1 execute diecast-db --local --config worker/wrangler.toml --file db/seed.sql",
+    "build:css": "clean-css-cli -o public/styles.min.css public/styles.css",
+    "deploy:worker": "wrangler deploy --config worker/wrangler.toml",
+    "deploy:site": "wrangler pages deploy public --project-name my-diecast",
+    "deploy": "npm run build:css && npm run deploy:worker && npm run deploy:site"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "wrangler": "^4.0.0"
+  }
+}

@@ -1,0 +1,32 @@
+# Diecast Gallery — Cloudflare Worker config.
+# Fill in the values marked ← and see README.md → "Full setup".
+
+name = "diecast-gallery"            # ← Worker name (any)
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[observability]
+enabled = true
+
+[vars]
+SITE_URL         = "https://diecast.example.com"           # ← your public site URL (no trailing slash)
+ORIGIN_URL       = "https://my-diecast.pages.dev"          # ← your Cloudflare Pages URL
+GITHUB_REPO      = "your-username/diecast-images"          # ← public repo that stores car photos
+GITHUB_BRANCH    = "main"
+SITE_TITLE       = "My Diecast Collection"
+SITE_DESCRIPTION = "Explore my diecast collection with detailed car pages, galleries, and more."
+
+[[d1_databases]]
+binding       = "diecast_db"                               # used by the code — keep this name
+database_name = "diecast-db"
+database_id   = "00000000-0000-0000-0000-000000000000"     # ← from `npx wrangler d1 create diecast-db`
+
+# Serve the Worker on your domain (the domain must be on Cloudflare).
+# Remove this block to use the free *.workers.dev URL instead.
+routes = [
+  { pattern = "diecast.example.com", custom_domain = true } # ← your domain
+]
+
+# Secrets (never put these in this file):
+#   npx wrangler secret put ADMIN_SECRET   # admin panel password
+#   npx wrangler secret put GITHUB_TOKEN   # fine-grained token, Contents: read & write on GITHUB_REPO

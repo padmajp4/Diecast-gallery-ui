@@ -1,0 +1,43 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/brands/*.png
+  Cache-Control: public, max-age=31536000, immutable
+/brands/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+/brands/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Root-level favicon/icon PNGs — short cache so updates show quickly
+/favicon-16x16.png
+  Cache-Control: public, max-age=3600
+/favicon-32x32.png
+  Cache-Control: public, max-age=3600
+/apple-touch-icon.png
+  Cache-Control: public, max-age=3600
+/android-chrome-192x192.png
+  Cache-Control: public, max-age=3600
+/android-chrome-512x512.png
+  Cache-Control: public, max-age=3600
+/favicon.ico
+  Cache-Control: public, max-age=3600
+
+/*.css
+  Cache-Control: public, max-age=86400
+
+/*.js
+  Cache-Control: public, max-age=86400
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://cloudflareinsights.com https://hotwheels.fandom.com https://matchbox.fandom.com https://en.wikipedia.org; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

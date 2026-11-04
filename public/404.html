@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>404 · Page Not Found</title>
+
+  <style>
+    /* ===============================
+       BASE THEME
+       =============================== */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: "Varela Round", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0b0b0b;
+      color: #eaeaea;
+    }
+
+    /* Carbon / woven texture */
+    body {
+      background-image:
+        linear-gradient(45deg,
+          rgba(255,255,255,0.03) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(255,255,255,0.03) 50%,
+          rgba(255,255,255,0.03) 75%,
+          transparent 75%,
+          transparent
+        ),
+        linear-gradient(45deg,
+          rgba(0,0,0,0.65) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(0,0,0,0.65) 50%,
+          rgba(0,0,0,0.65) 75%,
+          transparent 75%,
+          transparent
+        );
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+    }
+
+    /* ===============================
+       CENTER WRAPPER
+       =============================== */
+    .wrapper {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ===============================
+       GLASS CARD
+       =============================== */
+    .card {
+      max-width: 440px;
+      width: 100%;
+      background: rgba(18, 18, 18, 0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 36px 30px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 12px 36px rgba(0,0,0,0.65),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    /* ===============================
+       TYPOGRAPHY
+       =============================== */
+    .code {
+      font-size: 80px;
+      font-weight: 800;
+      margin: 0;
+      color: #ff3d3d;
+      letter-spacing: 3px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 6px 0 14px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 28px;
+    }
+
+    .emoji {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    /* ===============================
+       ACTION BUTTON
+       =============================== */
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff3d3d, #ff1744);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 8px 20px rgba(255,61,61,0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255,61,61,0.45);
+    }
+
+    /* ===============================
+       FOOT NOTE
+       =============================== */
+    .note {
+      margin-top: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .note span {
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="card">
+
+      <div class="emoji">🧭</div>
+
+      <h1 class="code">404</h1>
+      <div class="title">You’ve Drifted Off Course</div>
+
+      <p class="subtitle">
+        This page doesn’t exist, or it may have been moved.
+        Sometimes even well-engineered paths lead nowhere.
+      </p>
+
+      <a href="/" class="btn">Go Back Home</a>
+
+      <div class="note">
+        Built with <span>Diecast Gallery</span>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

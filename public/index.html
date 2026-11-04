@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <base href="/">
+  <title>My Diecast Collection</title>
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0d0d0d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Non-blocking font load — won't delay first paint -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap">
+  <link rel="preload" href="images/logo.webp" as="image">
+  <link rel="stylesheet" href="styles.min.css?v=27">
+  <script src="js/site.js?v=1" defer></script>
+  <link rel="preload" href="/api/cars" as="fetch" crossorigin="anonymous">
+  <link rel="modulepreload" href="js/app.js?v=11">
+  <link rel="modulepreload" href="js/config.js">
+  <link rel="modulepreload" href="js/carImage.js?v=3">
+  <link rel="modulepreload" href="js/theme.js">
+  <link rel="modulepreload" href="js/modal.js?v=12">
+  <link rel="modulepreload" href="js/home.js?v=10">
+  <link rel="modulepreload" href="js/allCars.js?v=10">
+  <link rel="modulepreload" href="js/exchange.js?v=7">
+  <link rel="modulepreload" href="js/brands.js?v=15">
+  <link rel="modulepreload" href="js/sets.js?v=7">
+<!-- Primary Meta Tags — change the title/description/URLs below to your own (see README → Customising) -->
+<meta name="title" content="My Diecast Collection">
+<meta name="description" content="A beautifully designed diecast dashboard featuring Hot Wheels, Matchbox, Tomica, Majorette and more. View models, filters, details, and unique Treasure Hunt cars.">
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://your-domain.example">
+<meta property="og:title" content="My Diecast Collection">
+<meta property="og:description" content="Explore my personal diecast collection with detailed car pages, galleries, and more.">
+<meta property="og:image" content="https://your-domain.example/og-image.webp">
+<meta property="og:logo" content="https://your-domain.example/images/logo.webp" />
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://your-domain.example/">
+<meta name="twitter:title" content="My Diecast Collection">
+<meta name="twitter:description" content="Explore my diecast car gallery with rich details and mobile-friendly design.">
+<meta name="twitter:image" content="https://your-domain.example/og-image.webp">
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3">
+<link rel="shortcut icon" href="/favicon.ico?v=3">
+
+</head>
+
+
+<body class="dark loading">
+
+<!-- Lighthouse / First Paint Skeleton -->
+<div id="app-skeleton" class="home-skeleton">
+
+  <!-- HERO -->
+  <div class="sk-hero"></div>
+
+  <!-- STATS -->
+  <div class="sk-stats">
+    <div></div><div></div><div></div><div></div>
+  </div>
+
+  <!-- BRANDS -->
+  <div class="sk-row"></div>
+
+  <!-- TREASURE -->
+  <div class="sk-row"></div>
+
+  <!-- RECENT -->
+  <div class="sk-grid">
+    <div></div><div></div><div></div>
+  </div>
+
+</div>
+<!-- SIDEBAR -->
+
+<div id="sidebar-skeleton" class="sidebar-skeleton">
+  <div class="sk-logo"></div>
+  <div class="sk-menu">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+  <div class="sk-toggle"></div>
+</div>
+<aside class="sidebar">
+<div class="sidebar-top">
+  <a href="/" aria-label="Go to home">
+    <img src="images/logo.webp" width="300" height="300" class="sidebar-logo" alt="Diecast Gallery logo">
+  </a>
+</div>
+<div class="menu-wrapper">
+<div class="menu">
+
+<div class="menu-item active" data-view="home" id="menu-home" data-tooltip="Home">
+  <img class="side-icon" data-light="images/icons/home_light.png" data-dark="images/icons/home_dark.png" alt="Home">
+  <span class="side-label">Home</span>
+</div>
+
+<div class="menu-item" data-view="all" id="menu-all" data-tooltip="Garage">
+  <img class="side-icon" data-light="images/icons/garage_light.png" data-dark="images/icons/garage_dark.png" alt="Garage">
+  <span class="side-label">Garage</span>
+</div>
+
+<div class="menu-item" data-view="brands" id="menu-brands" data-tooltip="Brands">
+  <img class="side-icon"
+       data-light="images/icons/brands-light.png"
+       data-dark="images/icons/brands-dark.png"
+       alt="Brands">
+  <span class="side-label">Brands</span>
+</div>
+
+<div class="menu-item" data-view="sets" id="menu-sets" data-tooltip="Sets">
+  <img class="side-icon"
+       data-light="images/icons/sets-light.svg"
+       data-dark="images/icons/sets-dark.svg"
+       alt="Sets">
+  <span class="side-label">Sets</span>
+</div>
+
+<div class="menu-item" data-view="exchange" id="menu-exchange" data-tooltip="Exchange">
+  <img class="side-icon" data-light="images/icons/Exchange_light.png" data-dark="images/icons/Exchange_dark.png" alt="Exchange models">
+  <span class="side-label">Exchange</span>
+</div>
+
+<div class="menu-item" data-view="about" id="menu-about" data-tooltip="History">
+  <img class="side-icon" data-light="images/icons/history_light.png" data-dark="images/icons/history_dark.png" alt="Diecast history">
+  <span class="side-label">History</span>
+</div>
+
+<div class="menu-item" data-view="aboutme" id="menu-aboutme" data-tooltip="About Me">
+  <img class="side-icon" data-light="images/icons/about_light.png" data-dark="images/icons/about_dark.png" alt="About me">
+  <span class="side-label">About Me</span>
+</div>
+</div>
+</div>
+
+<div class="sidebar-bottom">
+  <div class="theme-toggle-wrapper">
+    <div class="theme-toggle" id="themeToggle">☀️</div>
+    <div class="theme-label">Light / Dark</div>
+  </div>
+  <a href="/admin/" class="admin-link" title="Admin Panel">
+    <span class="admin-link-icon">⚙️</span>
+    <span class="side-label admin-link-label">Admin</span>
+  </a>
+</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+   <main class="content" id="appContent">
+      <!-- HOME --> 
+      <section id="view-home" class="view">
+         <!-- Home hero, stats, brands, recent rendered by home.js --> 
+      </section>
+      <!-- BRANDS / MANUFACTURERS -->
+      <section id="view-brands" class="view" style="display:none;"></section>
+      <!-- SETS -->
+      <section id="view-sets" class="view" style="display:none;"></section>
+      <!-- FULL CARS -->
+      <section id="view-all" class="view" style="display:none;">
+         <div class="garage-wrap">
+            <!-- Sticky topbar: search + filter button -->
+            <div class="garage-topbar">
+               <div class="gtb-search-wrap">
+                  <svg class="gtb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                     <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+                  </svg>
+                  <input id="searchBarALL" type="search" placeholder="Search cars…" autocomplete="off">
+               </div>
+               <div class="gtb-pagination">
+                  <button class="ghost-btn" id="prevPage">◀</button>
+                  <div id="paginationSummary" class="pagination-summary">–</div>
+                  <button class="ghost-btn" id="nextPage">▶</button>
+               </div>
+               <button class="gtb-filter-btn" id="randomCarBtn" aria-label="Random car" title="Open a random car">
+                  <svg class="gtb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                     <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                  </svg>
+               </button>
+               <button class="gtb-filter-btn" id="mobileFilterPill" aria-label="Open filters">
+                  <svg class="gtb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                     <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                  </svg>
+                  <span class="filter-badge" id="filterCountBadge"></span>
+               </button>
+            </div>
+            <!-- Cars grid -->
+            <div class="cars-grid-container">
+               <div id="allCarsContainer" class="garage-grid cars-grid"></div>
+            </div>
+         </div>
+      </section>
+      <!-- EXCHANGE PAGE --> 
+      <section id="view-exchange" class="view" style="display:none;">
+         <div class="exchange-page">
+            <div class="exchange-header glass-panel">
+               <h2>Available for Exchange</h2>
+               <p> These are models where I own multiple copies. If you’re interested in exchanging, feel free to reach out via the <strong>Contact</strong> section. </p>
+            </div>
+            <div id="exchangeGrid" class="cars-grid"></div>
+         </div>
+      </section>
+      <!-- ABOUT PAGE --> 
+      <section id="view-about" class="view" style="display:none;">
+         <div class="about-layout">
+            <!-- LEFT SIDE — HISTORY SECTION --> 
+            <div class="about-content glass-panel">
+               <h2>Diecast History</h2>
+               <p> Diecast cars began in the early 20th century when manufacturers started exploring metal casting for miniature vehicles. Over the decades, diecast evolved from simple toys into highly detailed collectibles admired by enthusiasts worldwide. </p>
+               <p> Brands like Hot Wheels, Matchbox, Majorette, Tomica, Maisto, and Greenlight have each shaped the culture of diecast collecting with unique casting styles, themes, and special series. </p>
+               <h3>Why Collect Diecast Cars?</h3>
+               <ul>
+                  <li>They capture real automotive design in miniature form.</li>
+                  <li>Huge variety: JDM, muscle cars, trucks, exotics, classics, fantasy models.</li>
+                  <li>Special series like Treasure Hunts and Super Treasure Hunts create excitement.</li>
+                  <li>Affordable and long-lasting hobby with great display value.</li>
+               </ul>
+               <h3>Major Brands</h3>
+               <p>Some of the most iconic brands in diecast are:</p>
+               <ul>
+                  <li><strong>Hot Wheels</strong> : Fantasy castings, licensed cars, TH/STH models.</li>
+                  <li><strong>Matchbox</strong> : Real-life vehicles and highly accurate designs.</li>
+                  <li><strong>Tomica</strong> : Premium Japanese realism and functional parts.</li>
+                  <li><strong>Majorette</strong> : European styling with opening doors and suspension.</li>
+                  <li><strong>Maisto</strong> : Accessible large-scale models.</li>
+                  <li><strong>Greenlight</strong> : Premium replicas with rubber tires and true-to-life details.</li>
+               </ul>
+               <p> Today, diecast collecting is more popular than ever, with limited releases, premium lines, collaborations, and collector conventions keeping the community active worldwide. </p>
+            </div>
+            <!-- RIGHT SIDE — TIMELINE --> 
+            <aside class="about-timeline glass-panel">
+               <h3 class="timeline-title">Diecast Timeline</h3>
+               <div class="timeline">
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/hotwheels.png" class="timeline-icon" alt="Hot Wheels logo"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">1968</div>
+                        <div class="timeline-text">Hot Wheels launches and transforms diecast culture.</div>
+                     </div>
+                  </div>
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/tomica.png" class="timeline-icon" alt="Tomica logo"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">1970s</div>
+                        <div class="timeline-text">Tomica expands globally with ultra-realistic JDM castings.</div>
+                     </div>
+                  </div>
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/matchbox.png" class="timeline-icon" alt="Matchbox logo"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">1980s</div>
+                        <div class="timeline-text">Matchbox becomes the standard for realism.</div>
+                     </div>
+                  </div>
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/hotwheels.png" class="timeline-icon" alt="Hot Wheels Treasure Hunt era"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">1995</div>
+                        <div class="timeline-text">Treasure Hunts make collecting explode worldwide.</div>
+                     </div>
+                  </div>
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/majorette.png" class="timeline-icon" alt="Majorette logo"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">2000s</div>
+                        <div class="timeline-text">Majorette rises with opening features and Euro styling.</div>
+                     </div>
+                  </div>
+                  <div class="timeline-item">
+                     <div class="timeline-dot"></div>
+                     <img src="brands/greenlight.png" class="timeline-icon" alt="Greenlight Collectibles logo"> 
+                     <div class="timeline-content">
+                        <div class="timeline-year">2020s</div>
+                        <div class="timeline-text">Premium realism dominates — rubber tires, metal bases, deep detail.</div>
+                     </div>
+                  </div>
+               </div>
+            </aside>
+         </div>
+      </section>
+      <!-- ABOUT ME PAGE — make this yours: photo (images/profile.webp), text and links -->
+      <section id="view-aboutme" class="view" style="display:none;">
+         <div class="aboutme-wrapper">
+            <img src="images/logo.webp" alt="Profile photo" class="aboutme-pic" loading="lazy" decoding="async">
+            <h1 class="aboutme-title">About Me</h1>
+            <p class="aboutme-text"> Hi! I'm a diecast collector. This gallery catalogues every car in my collection — the brands, series, treasure hunts and the stories behind them. </p>
+            <div class="aboutme-section">
+               <h2>Hobbies</h2>
+               <p class="aboutme-text"> Collecting models, photography, and hunting for the next treasure hunt. </p>
+            </div>
+            <div class="aboutme-section">
+               <h2>Connect</h2>
+               <div class="aboutme-socials">
+                  <!-- Add your own links here (Instagram, YouTube, blog…). Icons: https://simpleicons.org -->
+                  <a href="https://github.com/padmajp4/Diecast-gallery-ui" target="_blank" rel="noopener" aria-label="GitHub"> <img src="https://cdn.simpleicons.org/github/000000" data-dark="https://cdn.simpleicons.org/github/ffffff" alt="GitHub logo"> </a>
+               </div>
+            </div>
+         </div>
+      </section>
+   </main>
+
+
+  <!-- BG + FOOTER -->
+  <div class="bg-container">
+    <img src="images/bg-light.webp" class="corner-img light-img" aria-hidden="true" alt="" loading="lazy" decoding="async">
+    <img src="images/bg-dark.webp" class="corner-img dark-img" aria-hidden="true" alt="" loading="lazy" decoding="async">
+  </div>
+
+  <footer class="site-footer">
+    © <span id="year"></span>&nbsp;My Diecast Collection · Built with <a href="https://github.com/padmajp4/Diecast-gallery-ui" target="_blank" rel="noopener">Diecast Gallery</a></p>
+  </footer>
+
+  <!-- ========== MODAL (RESTORED POSITION) ========== -->
+  <div id="overlay">
+    <div id="details"></div>
+  </div>
+  <!-- ============================================== -->
+
+  <!-- GARAGE FILTER PANEL — body-level for correct fixed positioning -->
+  <div id="filterSheetOverlay"></div>
+  <aside class="filters-panel" id="garageFilterPanel">
+    <div class="sheet-handle"></div>
+    <div class="gfp-header">
+      <span class="gfp-title">Filter Garage</span>
+      <button class="gfp-close-btn" id="filterSheetClose" aria-label="Close filters">✕</button>
+    </div>
+    <div class="filters-top">
+      <div class="filters-stack">
+        <div class="gfp-group">
+          <label class="gfp-label" for="filterManufactureALL">Manufacturer</label>
+          <select id="filterManufactureALL"><option value="">All Manufacturers</option></select>
+        </div>
+        <div class="gfp-group">
+          <label class="gfp-label" for="filterBrandALL">Brand</label>
+          <select id="filterBrandALL"><option value="">All Brands</option></select>
+        </div>
+        <div class="gfp-group">
+          <label class="gfp-label" for="filterSeriesALL">Series</label>
+          <select id="filterSeriesALL"><option value="">All Series</option></select>
+        </div>
+        <div class="gfp-group">
+          <label class="gfp-label" for="filterSetALL">Set</label>
+          <select id="filterSetALL"><option value="">All Sets</option></select>
+        </div>
+        <div class="gfp-group">
+          <label class="gfp-label" for="filterStatusALL">Status</label>
+          <select id="filterStatusALL">
+            <option value="">All</option>
+            <option value="owned">Owned</option>
+            <option value="incoming">Incoming</option>
+            <option value="wishlist">Wishlist</option>
+          </select>
+        </div>
+        <div class="gfp-group">
+          <label class="gfp-label" for="allSort">Sort By</label>
+          <select id="allSort">
+            <option value="serial_desc">Newest First</option>
+            <option value="serial_asc">Oldest First</option>
+            <option value="name_asc">Name (A–Z)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="gfp-actions">
+      <button id="resetBtnALL" class="gfp-clear-btn">Clear All</button>
+      <button id="filterSheetApply" class="gfp-apply-btn">Apply</button>
+    </div>
+  </aside>
+
+  <div class="mobile-dock">
+    <div class="dock-item active" data-menu="menu-home"><img data-light="images/icons/home_light.png" data-dark="images/icons/home_dark.png"></div>
+    <div class="dock-item" data-menu="menu-all"><img data-light="images/icons/garage_light.png" data-dark="images/icons/garage_dark.png"></div>
+    <div class="dock-item" data-menu="menu-brands">
+      <img data-light="images/icons/brands-light.png"
+           data-dark="images/icons/brands-dark.png"
+           alt="Brands">
+    </div>
+    <div class="dock-item" data-menu="menu-sets">
+      <img data-light="images/icons/sets-light.svg" data-dark="images/icons/sets-dark.svg" alt="Sets">
+    </div>
+    <div class="dock-item" data-menu="menu-exchange"><img data-light="images/icons/Exchange_light.png" data-dark="images/icons/Exchange_dark.png"></div>
+    <div class="dock-item" data-menu="menu-about"><img data-light="images/icons/history_light.png" data-dark="images/icons/history_dark.png"></div>
+    <div class="dock-item" data-menu="menu-aboutme"><img data-light="images/icons/about_light.png" data-dark="images/icons/about_dark.png"></div>
+  </div>
+
+  <a href="/admin/" id="mobileAdminFab" title="Admin Panel">⚙️</a>
+  <div id="mobileThemeFab">☀️</div>
+
+  
+  <!-- app.js imports theme, modal, home, allCars, exchange — no need for separate tags -->
+  <script type="module" src="js/app.js?v=11"></script>
+<!-- ⌘K Global Search -->
+<div id="cmdkOverlay" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;padding-top:10vh">
+  <div id="cmdkBox" style="background:#1a1a1a;border:1px solid rgba(255,255,255,.12);border-radius:16px;width:min(600px,90vw);box-shadow:0 24px 64px rgba(0,0,0,.6);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      <input id="cmdkInput" type="search" placeholder="Search cars, brands, sets…" autocomplete="off"
+        style="flex:1;background:none;border:none;outline:none;font-size:1rem;color:#f0f0f0;font-family:inherit">
+      <kbd style="font-size:.72rem;color:#666;background:#111;border:1px solid #333;border-radius:5px;padding:2px 7px">Esc</kbd>
+    </div>
+    <div id="cmdkResults" style="max-height:60vh;overflow-y:auto;padding:8px 0"></div>
+  </div>
+</div>
+
+<div id="gifterOverlay" class="overlay">
+  <div class="gifter-box">
+    <button class="gifter-box-close">✕</button>
+    <div id="gifterModalContent"></div>
+  </div>
+</div>
+</body>
+
+
+
+
+</html>
