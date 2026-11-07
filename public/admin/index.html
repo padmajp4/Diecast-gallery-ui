@@ -234,6 +234,8 @@ select option{background:#111}
 
 /* ── Car Info tab ── */
 .ci-muted{color:var(--muted);font-size:.82rem}
+.field-hint{font-size:.72rem;color:var(--muted)}
+.qty-tag{font-size:.68rem;background:rgba(255,45,45,.12);color:var(--accent);border:1px solid rgba(255,45,45,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700}
 .ci-err{color:var(--accent);font-size:.82rem}
 .ci-empty{color:var(--muted);text-align:center;padding:24px}
 .ci-list{display:flex;flex-direction:column;gap:6px}
@@ -406,6 +408,12 @@ select option{background:#111}
         <div class="form-group">
           <label>Year</label>
           <input type="number" id="f_year" placeholder="2024" min="1990" max="2030">
+        </div>
+
+        <div class="form-group">
+          <label>Copies owned</label>
+          <input type="number" id="f_quantity" value="1" min="1" max="99" step="1" inputmode="numeric">
+          <span class="field-hint">More than 1 shows a ×N badge and lists the car in Exchange</span>
         </div>
 
         <div class="form-group">
@@ -1221,6 +1229,18 @@ async function saveCar() {
   if (saved) await loadCars(true);
 }
 
+function readQuantity() {
+  const n = parseInt(document.getElementById('f_quantity').value, 10);
+  return Number.isFinite(n) && n > 0 ? Math.min(n, 99) : 1;
+}
+
+/* Keep other ownership details; older records also carry a per-copy list — keep it the same length */
+function ownershipWith(existing, quantity) {
+  const own = { ...(existing || {}), quantity };
+  if (Array.isArray(own.copies)) own.copies = Array.from({ length: quantity }, (_, i) => own.copies[i] || {});
+  return own;
+}
+
 function buildPayload(imageUrls) {
   return {
     name:            document.getElementById('f_name').value.trim(),
@@ -1247,7 +1267,7 @@ function buildPayload(imageUrls) {
     // preserve fields not editable in the form
     featured_image:  editingCar?.featuredImage ?? null,
     variant_label:   editingCar?.variantLabel ?? null,
-    ownership:       editingCar?.ownership ? JSON.stringify(editingCar.ownership) : null,
+    ownership:       JSON.stringify(ownershipWith(editingCar?.ownership, readQuantity())),
   };
 }
 
@@ -1267,6 +1287,7 @@ function resetForm() {
   document.getElementById('editId').value = '';
   document.getElementById('f_scale').value = '1/64';
   document.getElementById('f_vehicle_type').value = 'Car';
+  document.getElementById('f_quantity').value = 1;
   document.getElementById('formTitle').textContent = 'Add New Car';
   editingCar = null;
   imageList = [];
@@ -1444,7 +1465,7 @@ function renderCarList(cars) {
       <td class="cb-cell"><input type="checkbox" class="row-cb" data-car-id="${car.id}"></td>
       <td style="font-weight:600">
         ${thumb ? `<img class="car-thumb" src="${esc(thumbUrl(thumb))}" data-full="${esc(thumb)}" onerror="if(this.dataset.full&&this.src!==this.dataset.full)this.src=this.dataset.full" loading="lazy" width="56" height="38" style="float:left;margin-right:8px">` : '<div class="car-thumb" style="float:left;margin-right:8px"></div>'}
-        ${esc(car.name)}${car.isIncoming ? ' <span style="font-size:.68rem;background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700">Incoming</span>' : ''}${car.isWishlist ? ' <span style="font-size:.68rem;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700">Wishlist</span>' : ''}
+        ${esc(car.name)}${car.isIncoming ? ' <span style="font-size:.68rem;background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700">Incoming</span>' : ''}${car.isWishlist ? ' <span style="font-size:.68rem;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700">Wishlist</span>' : ''}${(car.ownership?.quantity || 1) > 1 ? ` <span class="qty-tag" title="Copies owned">×${car.ownership.quantity}</span>` : ''}
         <span class="car-mob-sub">${[car.brand, car.serial, car.setName].filter(Boolean).map(esc).join(' · ')}</span>
         ${car.updatedAt ? `<span class="car-updated" title="Updated ${esc(car.updatedAt)} UTC">Updated ${timeAgo(parseDbTime(car.updatedAt))}</span>` : ''}
       </td>
@@ -1601,6 +1622,7 @@ function editCar(car) {
   document.getElementById('f_model').value = car.model || '';
   document.getElementById('f_variant_id').value = car.variantId || '';
   document.getElementById('f_description').value = car.description || '';
+  document.getElementById('f_quantity').value = Math.max(1, Number(car.ownership?.quantity) || 1);
   document.getElementById('f_treasure').checked = !!car.isTreasurehunt;
   document.getElementById('f_featured').checked = !!car.featured;
   document.getElementById('f_incoming').checked = !!car.isIncoming;
@@ -1682,6 +1704,7 @@ function duplicateCar(car) {
   editCar(car);                                        // prefill all fields
   document.getElementById('editId').value = '';        // clear ID → treated as new
   document.getElementById('f_serial').value = '';      // clear serial (each car unique)
+  document.getElementById('f_quantity').value = 1;     // a duplicate is a new car, one copy
   document.getElementById('formTitle').textContent = `New Car (copy of ${car.name})`;
   imageList = (Array.isArray(car.images) ? car.images : []).map(url => ({ type: 'existing', url }));
   editingCar = null;
@@ -1825,7 +1848,7 @@ async function deleteSetLogo(setName) {
 const IMPORT_HEADERS = [
   'name','serial','brand','series','year','colour','manufacture',
   'vehicle_type','scale','set_name','set_number','description',
-  'source','gifter','is_incoming','is_wishlist','is_treasure_hunt'
+  'source','gifter','is_incoming','is_wishlist','is_treasure_hunt','quantity'
 ];
 
 function downloadImportTemplate() {
@@ -1891,7 +1914,7 @@ function rowToPayload(row) {
     model: '',
     variant_id: '',
     variant_label: '',
-    ownership: '{}',
+    ownership: JSON.stringify({ quantity: Math.min(99, Math.max(1, parseInt(row.quantity, 10) || 1)) }),
     is_incoming: bool('is_incoming'),
     set_name: row.set_name || '',
     set_number: row.set_number || '',
