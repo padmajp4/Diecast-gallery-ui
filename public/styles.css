@@ -1637,6 +1637,9 @@ body:not(.dark) .details-box {
 .dp-variant-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .dp-title-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+/* Keep badges (×3, Coming Soon) clear of the absolutely-positioned close button */
+#details .dp-title-row,
+#details .dp-variants { padding-right: 48px; }
 
 .dp-title {
   margin: 0;
@@ -2483,6 +2486,7 @@ input, select {
 
   .modal-back-arrow { font-size: 1.1rem; line-height: 1; }
   #details .close-btn { display: none; }
+  #details .dp-title-row, #details .dp-variants { padding-right: 0; }   /* close button is hidden on mobile */
 
   /* Related */
   .related-section { padding-left: 16px; padding-right: 16px; }
