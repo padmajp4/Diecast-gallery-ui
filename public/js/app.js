@@ -1,12 +1,12 @@
 // js/app.js
 
 import { initTheme } from './theme.js';
-import { initModal, showDetailsModal } from './modal.js?v=14';
-import { renderHome, renderAboutBrands } from './home.js?v=12';
-import { initAll, refreshAll } from './allCars.js?v=12';
-import { initExchange } from './exchange.js?v=9';
-import { renderBrandsHub, renderBrandPage } from './brands.js?v=17';
-import { renderSetsHub, renderSetPage, bustSetLogosCache } from './sets.js?v=9';
+import { initModal, showDetailsModal } from './modal.js?v=15';
+import { renderHome, renderAboutBrands } from './home.js?v=13';
+import { initAll, refreshAll } from './allCars.js?v=13';
+import { initExchange } from './exchange.js?v=10';
+import { renderBrandsHub, renderBrandPage } from './brands.js?v=18';
+import { renderSetsHub, renderSetPage, bustSetLogosCache } from './sets.js?v=10';
 import { carThumbAttrs, installCarImageFallback } from './carImage.js?v=3';
 import { APP_CONFIG } from './config.js';
 

@@ -302,11 +302,12 @@ async function handleUpdateCar(request, env, id) {
   data.images = JSON.stringify(newImgs);
   if (data.featured_image) data.featured_image = unproxyImgUrl(data.featured_image);
 
-  // Find image URLs removed in this update and delete them from GitHub
-  const row = await env.diecast_db.prepare("SELECT images FROM cars WHERE id=?").bind(id).first();
+  // Find image URLs (photos + featured cut-out) removed in this update and delete them from GitHub
+  const row = await env.diecast_db.prepare("SELECT images, featured_image FROM cars WHERE id=?").bind(id).first();
   if (row) {
     const oldUrls = tryParseJson(row.images, []);
     const removed = oldUrls.filter(u => !newImgs.includes(u));
+    if (row.featured_image && row.featured_image !== (data.featured_image || null)) removed.push(row.featured_image);
     await deleteUnreferencedImages(removed, env, id);
   }
 
@@ -319,10 +320,10 @@ async function handleUpdateCar(request, env, id) {
 
 /* ── Delete car ── */
 async function handleDeleteCar(env, id) {
-  const row = await env.diecast_db.prepare("SELECT images FROM cars WHERE id=?").bind(id).first();
+  const row = await env.diecast_db.prepare("SELECT images, featured_image FROM cars WHERE id=?").bind(id).first();
   await env.diecast_db.prepare("DELETE FROM cars WHERE id=?").bind(id).run();
   await env.diecast_db.prepare("DELETE FROM car_info WHERE car_id=?").bind(id).run();
-  if (row) await deleteUnreferencedImages(tryParseJson(row.images, []), env, id);
+  if (row) await deleteUnreferencedImages([...tryParseJson(row.images, []), row.featured_image].filter(Boolean), env, id);
   return adminJson({ ok: true });
 }
 

@@ -89,7 +89,7 @@ function getBrandLogoPath(make) {
 }
 
 
-function getTheme(make) {
+export function getTheme(make) {
   if (!make) return DEFAULT_THEME;
   const key = Object.keys(BRAND_THEME).find(k =>
     k.toLowerCase() === make.toLowerCase() ||

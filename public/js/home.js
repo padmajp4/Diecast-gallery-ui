@@ -1,5 +1,6 @@
-import { showDetailsModal } from './modal.js?v=14';
+import { showDetailsModal, colourPillTag } from './modal.js?v=15';
 import { APP_CONFIG } from './config.js';
+import { getTheme, renderBrandPage } from './brands.js?v=18';
 import { carImageSrc, carThumbAttrs } from './carImage.js?v=3';
 import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
 
@@ -25,7 +26,6 @@ const BRAND_LOGOS = {
 
 let hofCars = [];
 let hofIndex = 0;
-let hofTimer = null;
 
 /********************************************
  * VIEWPORT HELPER
@@ -191,8 +191,7 @@ export function renderHome(cars) {
 
     </div>`;
 
-  if (APP_CONFIG.showHero && heroCar) updateHero(heroCar);
-  if (APP_CONFIG.showHero && heroCar && APP_CONFIG.heroAutoplay && !isMobile()) startHeroCarousel();
+  if (APP_CONFIG.showHero && heroCar) { setupHero(); updateHero(heroCar, false); }
   if (APP_CONFIG.showTreasureHunts !== false) renderTreasureHunts(thCars);
   if (APP_CONFIG.showRecent) wireRecent(recentCars);
   if (APP_CONFIG.showTopGifters) renderTopGifters(owned);
@@ -236,23 +235,125 @@ export function renderHome(cars) {
  * HERO STATIC DOM
  ********************************************/
 function buildHeroShell() {
-  const showMobileArrows = typeof window !== "undefined" && window.innerWidth <= 800;
   return `
     <div class="home-hero-left">
-      <div class="home-hero-label">Hall of Fame</div>
+      <div class="home-hero-label" id="heroLabel">Hall of Fame</div>
       <h2 class="home-hero-title" id="heroTitle"></h2>
       <div class="home-hero-tags" id="heroTags"></div>
       <p class="home-hero-desc" id="heroDesc"></p>
-      <button class="small-btn hero-btn" id="heroViewBtn">View details</button>
+      <div class="hero-actions">
+        <button class="small-btn hero-btn" id="heroViewBtn">View details</button>
+        <button class="hero-btn-ghost" id="heroMakeBtn" hidden></button>
+      </div>
     </div>
 
     <div class="home-hero-right">
       <div class="home-hero-image-wrap">
-        <img id="heroImage" class="home-hero-image car-img" fetchpriority="high" decoding="async">
-        ${showMobileArrows ? `<div class="hero-mobile-left">◀</div><div class="hero-mobile-right">▶</div>` : ""}
+        <span class="hero-watermark" id="heroWatermark" aria-hidden="true"></span>
+        <div class="hero-glow" aria-hidden="true"></div>
+        <img id="heroImage" class="home-hero-image car-img" fetchpriority="high" decoding="async" alt="">
+        <div class="hero-floor" aria-hidden="true"></div>
+        <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous car">&#8249;</button>
+        <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next car">&#8250;</button>
       </div>
       <div class="hero-dots" id="heroDots"></div>
+      <div class="hero-progress" aria-hidden="true"><span id="heroProgress"></span></div>
     </div>`;
+}
+
+/********************************************
+ * HERO SETUP (once per render)
+ * Autoplay is driven by the progress bar's CSS animation: when it ends we
+ * advance, and hovering pauses both together (see .hero-pause-hover).
+ ********************************************/
+const HERO_HIDDEN_MAKES = new Set(['fantasy']);
+let heroKeysBound = false;
+
+function heroMake(car) {
+  const m = (car.Manufacture || car.manufacture || '').trim();
+  return m && !HERO_HIDDEN_MAKES.has(m.toLowerCase()) ? m : '';
+}
+
+function setupHero() {
+  const hero = document.getElementById('homeHero');
+  if (!hero) return;
+  const multi = hofCars.length > 1;
+  const autoplay = multi && APP_CONFIG.heroAutoplay && !isMobile();
+  hero.classList.toggle('hero-single', !multi);
+  hero.classList.toggle('hero-autoplay', autoplay);
+  hero.classList.toggle('hero-pause-hover', autoplay && APP_CONFIG.heroPauseOnHover !== false);
+  hero.style.setProperty('--hero-interval', `${APP_CONFIG.heroAutoplayInterval || 5000}ms`);
+
+  document.getElementById('heroPrev').onclick = e => { e.stopPropagation(); heroPrev(); };
+  document.getElementById('heroNext').onclick = e => { e.stopPropagation(); heroNext(); };
+  if (autoplay) document.getElementById('heroProgress').addEventListener('animationend', heroNext);
+
+  // Swipe on touch screens
+  const wrap = hero.querySelector('.home-hero-image-wrap');
+  let x0 = null;
+  wrap.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  wrap.addEventListener('touchend', e => {
+    if (x0 == null || !multi) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) (dx < 0 ? heroNext : heroPrev)();
+  }, { passive: true });
+
+  // Warm the cache so slides switch instantly
+  hofCars.forEach(c => { const i = new Image(); i.src = getBestImage(c); });
+
+  if (!heroKeysBound) { heroKeysBound = true; document.addEventListener('keydown', onHeroKey); }
+}
+
+function onHeroKey(e) {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const home = document.getElementById('view-home');
+  if (!home || home.style.display === 'none' || !document.getElementById('homeHero') || hofCars.length < 2) return;
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '')) return;
+  const popupOpen = ['overlay', 'gifterOverlay', 'cmdkOverlay'].some(id => {
+    const el = document.getElementById(id); return el && getComputedStyle(el).display !== 'none';
+  });
+  if (popupOpen) return;
+  e.key === 'ArrowLeft' ? heroPrev() : heroNext();
+}
+
+/* Does the image have a transparent background? Check its corners once per URL. */
+const heroCutoutCache = new Map();
+function markHeroCutout(img, hero) {
+  const src = img.dataset.src;
+  if (!img.complete || !img.naturalWidth || img.dataset.src !== src) return;
+  let cutout = heroCutoutCache.get(src);
+  if (cutout === undefined) {
+    try {
+      const c = document.createElement('canvas'); c.width = 24; c.height = 24;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, 24, 24);
+      const corners = [[0, 0], [23, 0], [0, 23], [23, 23]].map(([x, y]) => ctx.getImageData(x, y, 1, 1).data[3]);
+      cutout = corners.filter(a => a < 40).length >= 3;
+    } catch { cutout = true; }   // can't read pixels → keep the floating look
+    heroCutoutCache.set(src, cutout);
+  }
+  hero.classList.toggle('hero-photo', !cutout);
+}
+
+function restartHeroProgress() {
+  const bar = document.getElementById('heroProgress');
+  if (!bar) return;
+  bar.style.animation = 'none';
+  void bar.offsetWidth;          // reflow so the animation starts over
+  bar.style.animation = '';
+}
+
+function replayHeroEnter(el) {
+  if (!el) return;
+  el.classList.remove('hero-enter');
+  void el.offsetWidth;
+  el.classList.add('hero-enter');
+}
+
+function goToBrand(make) {
+  document.getElementById('menu-brands')?.click();
+  renderBrandPage(window.ALL_CARS || hofCars, make);
+  history.pushState({ view: 'brands', make }, '', `/brands/${encodeURIComponent(make)}`);
 }
 
 /********************************************
@@ -262,8 +363,8 @@ function renderHeroDots() {
   const dots = document.getElementById("heroDots");
   if (!dots || hofCars.length < 2) return;
 
-  dots.innerHTML = hofCars.map((_, i) =>
-    `<span class="hero-dot ${i === hofIndex ? "active" : ""}" data-i="${i}"></span>`
+  dots.innerHTML = hofCars.map((c, i) =>
+    `<button class="hero-dot ${i === hofIndex ? "active" : ""}" data-i="${i}" aria-label="${escapeHtml(c.name || `Car ${i + 1}`)}"${i === hofIndex ? ' aria-current="true"' : ''}></button>`
   ).join("");
 
   dots.querySelectorAll(".hero-dot").forEach(dot => {
@@ -271,21 +372,55 @@ function renderHeroDots() {
   });
 }
 
-function updateHero(car) {
+function updateHero(car, animate = true) {
+  const hero = document.getElementById("homeHero");
+  const make = heroMake(car);
+  const theme = getTheme(make);
+  hero.style.setProperty('--hero-accent', theme.accent);
+  hero.style.setProperty('--hero-glow', theme.glow);
+  // Transparent cut-outs float on the backdrop; plain photos get a framed card.
+  // Decided from the image itself (see markHeroCutout), so a transparent photo floats too.
+
+  document.getElementById("heroLabel").textContent = ['Hall of Fame', car.brand || car.Brand].filter(Boolean).join(' · ');
   document.getElementById("heroTitle").textContent = car.name || "Untitled";
   document.getElementById("heroDesc").textContent = car.description || "One of the standout pieces in this collection.";
-  document.getElementById("heroTags").innerHTML = `
-    ${renderTag('Brand', car.brand || car.Brand)}
-    ${renderTag('Series', car.series || car.Series)}
-    ${renderTag('Year', car.year)}
-    ${renderTag('Serial', car.serial || car.Serial)}
-    ${isTH(car) ? `<span class="tag tag-th">Treasure Hunt ✨</span>` : ''}`;
+
+  const qty = Number(car.ownership?.quantity) || 1;
+  const series = car.series || car.Series;
+  document.getElementById("heroTags").innerHTML = [
+    isTH(car) && `<span class="tag tag-th">🔥 Treasure Hunt</span>`,
+    car.Colour && colourPillTag(car.Colour),
+    qty > 1 && `<span class="tag hero-qty" title="Copies owned">×${qty}</span>`,
+    car.year && `<span class="tag">${escapeHtml(String(car.year))}</span>`,
+    series && `<span class="tag hero-tag-muted">${escapeHtml(series)}</span>`,
+  ].filter(Boolean).join('');
+
+  const wm = document.getElementById("heroWatermark");
+  wm.textContent = (make || car.brand || '').toUpperCase();
+  // Shrink long names (LAMBORGHINI) so the watermark fits instead of being clipped
+  const wrapW = hero.querySelector('.home-hero-image-wrap').clientWidth || 500;
+  wm.style.fontSize = `${Math.min(96, Math.max(28, (wrapW * 0.94) / Math.max(wm.textContent.length, 1) / 0.68))}px`;
+
+  const makeBtn = document.getElementById("heroMakeBtn");
+  makeBtn.hidden = !make;
+  if (make) { makeBtn.textContent = `More ${make} →`; makeBtn.onclick = () => goToBrand(make); }
 
   const img = document.getElementById("heroImage");
   const src = getBestImage(car);
-  if (img.dataset.src !== src) { img.dataset.src = src; delete img.dataset.fellBack; img.src = src; }
+  img.alt = car.name || '';
+  if (img.dataset.src !== src) {
+    img.dataset.src = src; delete img.dataset.fellBack;
+    hero.classList.toggle('hero-photo', heroCutoutCache.get(src) === false);
+    img.onload = () => markHeroCutout(img, hero);
+    img.src = src;
+  } else markHeroCutout(img, hero);
 
+  if (animate) {
+    replayHeroEnter(img);
+    replayHeroEnter(hero.querySelector('.home-hero-left'));
+  }
   renderHeroDots();
+  restartHeroProgress();
   wireHero(car);
 }
 
@@ -305,38 +440,17 @@ function wireHero(car) {
   const img = document.getElementById('heroImage');
   if (btn) btn.onclick = () => showDetailsModal(car);
   if (img) img.onclick = () => showDetailsModal(car);
-  if (isMobile()) setupHeroMobileControls();
 }
 
 /********************************************
  * MOBILE HERO CONTROLS
  ********************************************/
-function setupHeroMobileControls() {
-  const hero = document.getElementById("homeHero");
-  if (!hero) return;
-  hero.querySelector(".hero-mobile-left")?.addEventListener("click", heroPrev);
-  hero.querySelector(".hero-mobile-right")?.addEventListener("click", heroNext);
-}
+
 
 /********************************************
  * HERO CAROUSEL
  ********************************************/
-function startHeroCarousel() {
-  if (hofTimer) clearInterval(hofTimer);
-  if (!hofCars || hofCars.length < 2 || isMobile()) return;
-  const hero = document.getElementById("homeHero");
-  if (!hero) return;
 
-  hofTimer = setInterval(() => showHeroAt(hofIndex + 1), APP_CONFIG.heroAutoplayInterval || 5000);
-
-  if (APP_CONFIG.heroPauseOnHover) {
-    hero.addEventListener("mouseenter", () => clearInterval(hofTimer), { passive: true });
-    hero.addEventListener("mouseleave", () => {
-      clearInterval(hofTimer);
-      hofTimer = setInterval(() => showHeroAt(hofIndex + 1), APP_CONFIG.heroAutoplayInterval || 5000);
-    }, { passive: true });
-  }
-}
 
 /* Everything else below this line is unchanged */
 

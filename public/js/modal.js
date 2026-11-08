@@ -13,7 +13,7 @@ function hexLuminance(hex) {
   return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 }
 
-function colourPillTag(colourStr) {
+export function colourPillTag(colourStr) {
   if (!colourStr) return "";
   const map = APP_CONFIG.CAR_COLOURS || {};
   const key = colourStr.trim().toLowerCase();

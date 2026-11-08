@@ -235,6 +235,12 @@ select option{background:#111}
 /* ── Car Info tab ── */
 .ci-muted{color:var(--muted);font-size:.82rem}
 .field-hint{font-size:.72rem;color:var(--muted)}
+.cutout-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.cutout-preview{width:220px;height:130px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;overflow:hidden;
+  background:repeating-conic-gradient(#2a2a2a 0% 25%,#1c1c1c 0% 50%) 50%/16px 16px}
+.cutout-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.cutout-actions{display:flex;flex-direction:column;gap:8px;flex:1;min-width:220px}
+.cutout-warn{color:#f59e0b}
 .qty-tag{font-size:.68rem;background:rgba(255,45,45,.12);color:var(--accent);border:1px solid rgba(255,45,45,.3);border-radius:4px;padding:1px 6px;vertical-align:middle;font-weight:700}
 .ci-err{color:var(--accent);font-size:.82rem}
 .ci-empty{color:var(--muted);text-align:center;padding:24px}
@@ -516,6 +522,23 @@ select option{background:#111}
             <p>Click or drag & drop images here</p>
           </div>
           <div class="img-preview-grid" id="imgPreviewGrid"></div>
+        </div>
+
+        <!-- Featured cut-out (home "Hall of Fame") -->
+        <div class="form-group span2">
+          <label>Featured cut-out <span class="field-hint" style="text-transform:none;letter-spacing:0;font-weight:500">— transparent PNG/WebP used in the home "Hall of Fame" banner</span></label>
+          <div class="cutout-row">
+            <div class="cutout-preview" id="cutoutPreview"><span>No cut-out</span></div>
+            <div class="cutout-actions">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <label class="btn btn-secondary btn-sm" style="cursor:pointer">Choose image
+                  <input type="file" id="cutoutInput" accept="image/png,image/webp,image/heic,image/heif,image/*" style="display:none" onchange="handleCutout(this.files[0])">
+                </label>
+                <button type="button" class="btn btn-danger btn-sm" id="cutoutRemove" style="display:none" onclick="removeCutout()">Remove</button>
+              </div>
+              <span class="field-hint" id="cutoutHint">Make one in seconds: Mac → open the photo in Preview → Tools → Remove Background. iPhone → long-press the car in Photos → Share → Save Image.</span>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1072,6 +1095,75 @@ async function makeThumbBase64(blob) {
   }
 }
 
+/* ── Featured cut-out ──
+   { url: saved URL | null, blob/objectUrl: new image waiting to upload, removed } */
+let cutout = { url: null, blob: null, objectUrl: null, removed: false };
+
+function setCutout(state) {
+  if (cutout.objectUrl) URL.revokeObjectURL(cutout.objectUrl);
+  cutout = { url: null, blob: null, objectUrl: null, removed: false, ...state };
+  renderCutout();
+}
+
+function renderCutout(note) {
+  const box = document.getElementById('cutoutPreview');
+  const src = cutout.objectUrl || (!cutout.removed && cutout.url);
+  box.innerHTML = src ? `<img src="${esc(src)}" alt="Featured cut-out">` : '<span>No cut-out</span>';
+  document.getElementById('cutoutRemove').style.display = src ? '' : 'none';
+  const hint = document.getElementById('cutoutHint');
+  if (note) { hint.innerHTML = note; hint.classList.add('cutout-warn'); }
+  else {
+    hint.classList.remove('cutout-warn');
+    hint.textContent = 'Make one in seconds: Mac → open the photo in Preview → Tools → Remove Background. iPhone → long-press the car in Photos → Share → Save Image.';
+  }
+}
+
+/* Resize to 1200px, keep transparency, encode WebP (PNG if the browser can't) */
+async function handleCutout(file) {
+  document.getElementById('cutoutInput').value = '';
+  if (!file) return;
+  try {
+    const bmp = await createImageBitmap(await toDecodable(file));
+    const scale = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bmp.width * scale); canvas.height = Math.round(bmp.height * scale);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height); bmp.close();
+    // Any transparent pixels? Sample a coarse grid.
+    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let transparent = false;
+    for (let i = 3; i < data.length; i += 4 * 97) { if (data[i] < 250) { transparent = true; break; } }
+    let blob = _canEncodeWebP ? await canvasToBlob(canvas, 'image/webp', 0.86) : null;
+    if (!blob || blob.type !== 'image/webp') blob = await canvasToBlob(canvas, 'image/png');
+    setCutout({ url: cutout.url, blob, objectUrl: URL.createObjectURL(blob) });
+    if (!transparent) renderCutout('⚠ This image has no transparent background — it will show as a framed photo. Use a cut-out for the floating look.');
+  } catch (e) {
+    console.error('cut-out failed:', e);
+    renderCutout('⚠ Could not read that image. Try a PNG or WebP.');
+  }
+}
+
+function removeCutout() {
+  setCutout({ url: cutout.url, removed: true });
+}
+
+/* Upload a new cut-out if one is waiting; returns the featured_image value to save */
+async function uploadCutoutIfNeeded(name, serial) {
+  if (cutout.blob) {
+    const ext = cutout.blob.type === 'image/webp' ? 'webp' : 'png';
+    const base64 = (await blobToResult(cutout.blob, ext)).base64;
+    const res = await authFetch('/admin/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: sanitizeFilename(`${name}-${serial}-featured-${Date.now()}.${ext}`), base64 }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Cut-out upload failed');
+    return data.url;
+  }
+  return cutout.removed ? null : cutout.url;
+}
+
 /* Thumbnail URL for list views (falls back to the full image if missing) */
 function thumbUrl(url) {
   return url && url.includes('/images/cars/') && !url.includes('/images/cars/thumbs/')
@@ -1203,9 +1295,22 @@ async function saveCar() {
   // Collect final URLs in display order
   const uploadedUrls = imageList.map(it => it.type === 'existing' ? it.url : it.url).filter(Boolean);
 
-  // 2. Save car metadata
+  // 2. Featured cut-out
+  let featuredImage;
+  try {
+    if (cutout.blob) setProgress(uploadCount, uploadCount, 'Uploading cut-out…');
+    featuredImage = await uploadCutoutIfNeeded(name, serial);
+  } catch (e) {
+    showStatus(`Cut-out upload failed: ${e.message}`, false);
+    saveBtn.disabled = false;
+    progressWrap.style.display = 'none';
+    return;
+  }
+
+  // 3. Save car metadata
   setProgress(uploadCount, uploadCount, 'Saving car…');
   const payload = buildPayload(uploadedUrls);
+  payload.featured_image = featuredImage;
   const editId = document.getElementById('editId').value;
   const method = editId ? 'PUT' : 'POST';
   const endpoint = editId ? `/admin/api/cars/${editId}` : '/admin/api/cars';
@@ -1297,6 +1402,7 @@ function resetForm() {
   editingCar = null;
   imageList = [];
   renderPreviews();
+  setCutout({});
   // Note: do NOT call hideStatus() here — callers manage their own status messages
 }
 
@@ -1637,6 +1743,7 @@ function editCar(car) {
   editingCar = car;
   imageList = (Array.isArray(car.images) ? car.images : []).map(url => ({ type: 'existing', url }));
   renderPreviews();
+  setCutout({ url: car.featuredImage || null });
 
   switchTab('add', document.querySelector('[data-tab="add"]'));
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1710,6 +1817,7 @@ function duplicateCar(car) {
   document.getElementById('editId').value = '';        // clear ID → treated as new
   document.getElementById('f_serial').value = '';      // clear serial (each car unique)
   document.getElementById('f_quantity').value = 1;     // a duplicate is a new car, one copy
+  setCutout({});                                       // never share a cut-out file between cars
   document.getElementById('formTitle').textContent = `New Car (copy of ${car.name})`;
   imageList = (Array.isArray(car.images) ? car.images : []).map(url => ({ type: 'existing', url }));
   editingCar = null;
