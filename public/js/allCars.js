@@ -1,5 +1,5 @@
 // js/allCars.js
-import { showDetailsModal } from './modal.js?v=12';
+import { showDetailsModal } from './modal.js?v=13';
 import { realCarImage, fallbackCarImage, thumbOf } from './carImage.js?v=3';
 
 /********************************************

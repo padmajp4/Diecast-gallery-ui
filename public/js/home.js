@@ -1,6 +1,7 @@
-import { showDetailsModal } from './modal.js?v=12';
+import { showDetailsModal } from './modal.js?v=13';
 import { APP_CONFIG } from './config.js';
 import { carImageSrc, carThumbAttrs } from './carImage.js?v=3';
+import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
 
 
 /********************************************
@@ -446,7 +447,7 @@ window.openGifterModal = function (name, cars) {
       ${cars.map(car => `
         <tr>
           <td><img ${thumbAttrs(car)} class="gifter-thumb car-img" loading="lazy" decoding="async"></td>
-          <td>${escapeHtml(car.name || "")}</td>
+          <td>${escapeHtml(car.name || "")}<span class="gifter-sub">${[car.brand || car.Brand, car.series || car.Series, car.year, car.serial || car.Serial].filter(Boolean).map(escapeHtml).join(" · ")}</span></td>
           <td>${escapeHtml(car.brand || car.Brand || "")}</td>
           <td>${escapeHtml(car.series || car.Series || "")}</td>
           <td>${escapeHtml(car.year || "")}</td>
@@ -454,15 +455,16 @@ window.openGifterModal = function (name, cars) {
         </tr>`).join("")}
     </table>`;
   overlay.style.display = "flex";
-
-  document.body.classList.add("gifter-lock");
+  lockScroll("gifter");
 };
 
 window.closeGifterModal = function () {
   document.getElementById("gifterOverlay").style.display = "none";
-  document.body.classList.remove("gifter-lock");
-
+  unlockScroll("gifter");
 };
+// Tap outside the box or press Esc to close
+document.getElementById("gifterOverlay")?.addEventListener("click", e => { if (e.target.id === "gifterOverlay") window.closeGifterModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.getElementById("gifterOverlay")?.style.display === "flex") window.closeGifterModal(); });
 document.querySelector(".gifter-box-close")?.addEventListener("click", window.closeGifterModal);
 
 /********************************************

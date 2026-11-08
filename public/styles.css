@@ -2059,7 +2059,9 @@ body:not(.dark) .aboutme-socials img { filter: invert(0); }
   padding: 20px 20px 16px;
 }
 
-#gifterModalContent { overflow-y: auto; flex: 1; }
+/* Scroll stays inside the table — doesn't hand off to the page behind */
+#gifterModalContent { overflow: auto; flex: 1; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+#overlay, #gifterOverlay { overscroll-behavior: contain; }
 
 .gifter-box-close {
   position: absolute;
@@ -2105,10 +2107,20 @@ body:not(.dark) .aboutme-socials img { filter: invert(0); }
 }
 
 .gifter-table tr:hover td { background: var(--accent-dim); }
+/* Long names wrap so every column (incl. Serial) fits */
+.gifter-table td:nth-child(2) { white-space: normal; min-width: 150px; }
+.gifter-sub { display: none; }
+/* Phones: image + name, with brand · series · year · serial as a second line */
+@media (max-width: 600px) {
+  .gifter-table th:nth-child(n+3),
+  .gifter-table td:nth-child(n+3) { display: none; }
+  .gifter-table td:nth-child(2) { min-width: 0; width: 100%; }
+  .gifter-sub { display: block; margin-top: 3px; font-size: 0.72rem; color: var(--muted); }
+  .gifter-thumb { width: 56px; height: 38px; }
+}
 
 .gifter-thumb { width: 60px; height: 40px; border-radius: 6px; object-fit: cover; display: block; }
 
-body.gifter-lock { overflow: hidden; height: 100vh; }
 
 /* ── 21. BACKGROUND DECOR ────────────────────────────────────── */
 .bg-container { position: fixed; inset: 0; z-index: -1; pointer-events: none; }

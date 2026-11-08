@@ -1,5 +1,6 @@
 import { APP_CONFIG } from './config.js';
 import { carThumbAttrs, fallbackCarImage, thumbOf } from './carImage.js?v=3';
+import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
 
 /***************************************************
  * COLOUR PILL HELPER
@@ -74,7 +75,7 @@ export function initModal() {
 
   window.modalClose = function () {
     if (overlay) overlay.style.display = "none";
-    document.body.style.overflow = "";
+    unlockScroll("details");
   };
 }
 
@@ -393,7 +394,7 @@ export function showDetailsModal(car) {
   }
 
   overlay.style.display = "flex";
-  document.body.style.overflow = "hidden";
+  lockScroll("details");
 }
 
 /* =========================================================
