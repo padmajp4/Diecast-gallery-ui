@@ -17,6 +17,7 @@ export const APP_CONFIG = {
   showRecent: true,
   showTopGifters: true,
   showTreasureHunts: true,
+  showVariants: true,    // "Collected in multiples" (cars you own in several versions)
   // -------------------------
   // CAROUSEL SETTINGS
   // -------------------------

@@ -1,4 +1,4 @@
-import { APP_CONFIG } from './config.js';
+import { APP_CONFIG } from './config.js?v=2';
 import { carThumbAttrs, fallbackCarImage, thumbOf } from './carImage.js?v=3';
 import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
 
@@ -82,9 +82,11 @@ export function initModal() {
 /***************************************************
  * HELPERS
  ***************************************************/
+const modelKeyOf = m => String(m || '').trim().replace(/\s+/g, ' ').toLowerCase();
 function getVariants(car) {
   if (!window.ALL_CARS || !car.model) return [];
-  return window.ALL_CARS.filter(c => c.model === car.model);
+  const key = modelKeyOf(car.model);
+  return window.ALL_CARS.filter(c => modelKeyOf(c.model) === key && !c.isWishlist);
 }
 
 function getFriendlyVariantLabel(car) {
@@ -218,6 +220,7 @@ export function showDetailsModal(car) {
                   ${escapeHtml(getFriendlyVariantLabel(v))}
                 </span>
               `).join("")}
+              <a class="dp-variants-all" href="/variants/${encodeURIComponent(car.model.trim())}" data-variants-link>All ${variants.length} versions →</a>
             </div>
           ` : ""}
 
@@ -277,6 +280,12 @@ export function showDetailsModal(car) {
   loadWikiInfo(car, box);
 
   box.querySelectorAll("[data-close]").forEach(el => el.addEventListener("click", () => window.modalClose()));
+  box.querySelector("[data-variants-link]")?.addEventListener("click", e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    window.modalClose();
+    window.appNavigate?.(e.currentTarget.getAttribute("href"));
+  });
   box.querySelector("#detailsMainImg[data-zoom]")?.addEventListener("click", () => openLightbox(imgs[currentIndex] || imgs[0]));
 
   /* Share button */

@@ -1,5 +1,5 @@
 // js/allCars.js
-import { showDetailsModal } from './modal.js?v=15';
+import { showDetailsModal } from './modal.js?v=16';
 import { realCarImage, fallbackCarImage, thumbOf } from './carImage.js?v=3';
 
 /********************************************
@@ -75,6 +75,17 @@ function injectVariantQuickFilter() {
   };
 
   stack.appendChild(badge);
+
+  const link = document.createElement("a");
+  link.className = "tag quick-filter-link";
+  link.href = "/variants";
+  link.textContent = "Variants page →";
+  link.addEventListener("click", e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    window.appNavigate?.("/variants");
+  });
+  stack.appendChild(link);
 }
 
 /********************************************

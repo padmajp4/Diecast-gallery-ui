@@ -1,8 +1,9 @@
-import { showDetailsModal, colourPillTag } from './modal.js?v=15';
-import { APP_CONFIG } from './config.js';
-import { getTheme, renderBrandPage } from './brands.js?v=18';
+import { showDetailsModal, colourPillTag } from './modal.js?v=16';
+import { APP_CONFIG } from './config.js?v=2';
+import { getTheme, renderBrandPage } from './brands.js?v=19';
 import { carImageSrc, carThumbAttrs } from './carImage.js?v=3';
 import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
+import { variantGroups, variantStack, variantPath } from './variants.js?v=1';
 
 
 /********************************************
@@ -136,6 +137,7 @@ export function renderHome(cars) {
 
       ${APP_CONFIG.showTreasureHunts !== false ? `<section class="home-treasure glass-panel"><div class="home-section-header"><h3>Treasure Hunts 🔥</h3><span class="home-section-sub">Special finds from the collection</span></div><div id="treasureHuntSection" class="th-scroll"></div></section>` : ""}
       ${APP_CONFIG.showRecent ? `<section class="home-recent glass-panel"><div class="home-section-header"><h3>Recently Added</h3><span class="home-section-sub">Latest from my collection</span></div><div class="home-recent-grid">${recentCars.map(car=>`<div class="card home-recent-card"><div class="home-recent-image-wrap"><img class="car-img" ${thumbAttrs(car)} loading="lazy" decoding="async">${isTH(car)?`<img src="images/th.png" class="th-logo" loading="lazy" decoding="async">`:''}</div><div class="card-title">${escapeHtml(car.name||'')}</div></div>`).join('')}</div></section>`:""}
+      ${buildMultiplesSection(list)}
       ${APP_CONFIG.showTopGifters ? `<section class="home-gifters glass-panel"><div class="home-section-header"><h3>Top Gifters 🎁 </h3><span class="home-section-sub">Based on cars gifted</span></div><div id="gifters-grid" class="gifters-grid"></div></section>` : ""}
       ${APP_CONFIG.showSeriesTracker ? `<section class="home-series glass-panel"><div class="home-section-header"><h3>Series Collection</h3><span class="home-section-sub">${seriesSet.size} series tracked</span></div><div id="seriesTrackerGrid" class="series-tracker-grid"></div></section>` : ""}
 
@@ -211,6 +213,12 @@ export function renderHome(cars) {
       if (car) showDetailsModal(car);
     });
   });
+
+  home.querySelectorAll("[data-nav]").forEach(a => a.addEventListener("click", e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    window.appNavigate?.(a.getAttribute("href"));
+  }));
 
   home.querySelectorAll(".stat-link").forEach(card => {
     card.style.cursor = "pointer";
@@ -664,6 +672,27 @@ export function renderAboutBrands() {
 
 function goToGarage() {
   document.getElementById("menu-all")?.click();
+}
+
+/* ── Collected in multiples ── */
+function buildMultiplesSection(cars) {
+  if (APP_CONFIG.showVariants === false) return '';
+  const groups = variantGroups(cars);
+  if (!groups.length) return '';
+  const cards = groups.slice(0, 6).map(g => `
+    <a class="hv-card" href="${variantPath(g.name)}" data-nav>
+      ${variantStack(g.cars)}
+      <div class="hv-name">${escapeHtml(g.name)}</div>
+      <div class="hv-count">${g.cars.length} versions</div>
+    </a>`).join('');
+  return `
+    <section class="home-variants glass-panel">
+      <div class="home-section-header">
+        <h3>Collected in multiples 🔁</h3>
+        <a class="home-section-link" href="/variants" data-nav>See all ${groups.length} →</a>
+      </div>
+      <div class="hv-grid">${cards}</div>
+    </section>`;
 }
 
 /* ── On This Day ── */

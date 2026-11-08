@@ -7,6 +7,8 @@
 /brands/:make  /  200
 /sets          /  200
 /sets/:set     /  200
+/variants      /  200
+/variants/:model  /  200
 /exchange      /  200
 /history       /  200
 /about         /  200

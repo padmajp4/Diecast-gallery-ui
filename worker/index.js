@@ -86,6 +86,9 @@ export default {
     if (infoMatch && method === "GET")
       return handleGetCarInfo(env, parseInt(infoMatch[1]));
 
+    if (path === "/api/car-info" && method === "GET")
+      return handleGetCarInfoBatch(env, url.searchParams.get("ids"));
+
     // Image proxy — serves GitHub raw images with long browser + edge cache
     if (path.startsWith("/img/") && method === "GET")
       return handleImageProxy(request, ctx, path);
@@ -603,12 +606,21 @@ async function handleSitemap(env, ctx) {
   if (hit) return hit;
 
   const { results } = await env.diecast_db
-    .prepare("SELECT name, manufacture, set_name, updated_at FROM cars WHERE is_wishlist = 0")
+    .prepare("SELECT name, manufacture, set_name, model, updated_at FROM cars WHERE is_wishlist = 0")
     .all();
 
   const urls = new Map(); // loc → lastmod
   const add = (loc, lastmod = "") => { if (!urls.has(loc)) urls.set(loc, lastmod); };
-  for (const p of ["/", "/garage", "/brands", "/sets", "/exchange", "/history", "/about"]) add(SITE_URL + p);
+  for (const p of ["/", "/garage", "/brands", "/sets", "/variants", "/exchange", "/history", "/about"]) add(SITE_URL + p);
+  // Variant pages: models with 2+ cars (same grouping as the site: trimmed, case-insensitive)
+  const models = new Map();
+  for (const r of results) {
+    const m = (r.model || "").trim().replace(/\s+/g, " ");
+    if (!m) continue;
+    const k = m.toLowerCase();
+    const e = models.get(k) || { name: m, n: 0 }; e.n++; models.set(k, e);
+  }
+  for (const { name, n } of models.values()) if (n > 1) add(`${SITE_URL}/variants/${encodeURIComponent(name)}`);
   for (const r of results) {
     const day = (r.updated_at || "").slice(0, 10);
     const make = (r.manufacture || "").trim();
@@ -641,6 +653,18 @@ async function handleGetCarInfo(env, id) {
     .prepare("SELECT data FROM car_info WHERE car_id=? AND status='confirmed'")
     .bind(id).first();
   return pubJson(row ? tryParseJson(row.data, null) : null);
+}
+
+/* ?ids=1,2,3 → { "1": data, … } for confirmed rows (variant pages: one request, not N) */
+async function handleGetCarInfoBatch(env, idsParam) {
+  const ids = [...new Set(String(idsParam || "").split(",").map(n => parseInt(n, 10)).filter(n => n > 0))].slice(0, 100);
+  if (!ids.length) return pubJson({});
+  const { results } = await env.diecast_db
+    .prepare(`SELECT car_id, data FROM car_info WHERE status='confirmed' AND car_id IN (${ids.map(() => "?").join(",")})`)
+    .bind(...ids).all();
+  const out = {};
+  for (const r of results) out[r.car_id] = tryParseJson(r.data, null);
+  return pubJson(out);
 }
 
 async function handleListCarInfo(env) {

@@ -234,6 +234,18 @@ select option{background:#111}
 
 /* ── Car Info tab ── */
 .ci-muted{color:var(--muted);font-size:.82rem}
+.va-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--card2)}
+.va-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.va-model{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.8rem;flex:1;min-width:240px}
+.va-model input{flex:1}
+.va-cars{display:flex;flex-direction:column;gap:6px}
+.va-car{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--text);font-size:.85rem;cursor:pointer}
+.va-car img,.va-noimg{width:56px;height:38px;object-fit:cover;border-radius:6px;background:#111;flex-shrink:0;display:block}
+.va-car small{color:var(--muted)}
+.va-cb{width:16px;height:16px;accent-color:var(--accent)}
+.va-context{font-size:.75rem;color:var(--muted);margin-top:8px}
+.va-warn{font-size:.75rem;color:#f59e0b;margin-top:8px}
+.va-actions{display:flex;gap:8px;margin-top:10px}
 .field-hint{font-size:.72rem;color:var(--muted)}
 .cutout-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .cutout-preview{width:220px;height:130px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;overflow:hidden;
@@ -338,6 +350,7 @@ select option{background:#111}
     <button class="tab-btn" data-tab="setlogos" onclick="switchTab('setlogos',this)">🏷️ Set Logos</button>
     <button class="tab-btn" data-tab="import" onclick="switchTab('import',this)">📥 Bulk Import</button>
     <button class="tab-btn" data-tab="carinfo" onclick="switchTab('carinfo',this)">🔎 Car Info</button>
+    <button class="tab-btn" data-tab="variants" onclick="switchTab('variants',this)">🔗 Variants</button>
   </div>
 
   <!-- ── ADD / EDIT TAB ── -->
@@ -664,7 +677,6 @@ select option{background:#111}
       </div>
     </div>
   </div>
-</div>
 
   <!-- ── CAR INFO TAB ── -->
   <div id="tab-carinfo" class="tab-panel">
@@ -681,11 +693,21 @@ select option{background:#111}
           <option value="all">All</option>
         </select>
         <select id="ciBrand" onchange="ciRender()"><option value="">All Brands</option></select>
+        <button class="btn btn-secondary btn-sm" id="ciBackfillBtn" onclick="ciBackfillReleases()" title="Adds each casting's release list to cars confirmed earlier, for the Variants page tracker">↻ Update release lists</button>
       </div>
       <div id="ciList" class="ci-list"></div>
     </div>
   </div>
   <div id="ciReview"><div id="ciDialog"></div></div>
+
+  <!-- ── VARIANTS TAB ── -->
+  <div id="tab-variants" class="tab-panel">
+    <div class="panel">
+      <div class="form-title">Variants <span id="vaCount" class="ci-muted" style="font-weight:600;font-size:.8rem;margin-left:8px"></span></div>
+      <p class="ci-muted" style="margin-bottom:16px">Cars with the same <b>Model</b> appear together on the public Variants page. These look like versions of the same casting but aren't grouped yet — check the model name, untick anything that doesn't belong, and click Group.</p>
+      <div id="vaList"></div>
+    </div>
+  </div>
 
   <!-- ── BULK IMPORT TAB ── -->
   <div id="tab-import" class="tab-panel">
@@ -734,6 +756,7 @@ select option{background:#111}
       <div id="importResultsSection" class="import-results" style="display:none"></div>
     </div>
   </div>
+</div><!-- /#adminUI -->
 
 <!-- Undo delete toast -->
 <div id="undoToast">
@@ -822,6 +845,7 @@ function switchTab(id, btn) {
   if (id === 'manage') loadCars(true);
   if (id === 'setlogos') renderSetLogosTab();
   if (id === 'carinfo') ciInit();
+  if (id === 'variants') vaInit();
 }
 
 /* ── Next serial ── */
@@ -2206,6 +2230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-<script src="/admin/carinfo.js?v=7"></script>
+<script src="/admin/carinfo.js?v=8"></script>
+<script src="/admin/variants-admin.js?v=1"></script>
 </body>
 </html>

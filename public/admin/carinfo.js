@@ -501,11 +501,57 @@ function ciDraw() {
     </div>`;
 }
 
+/* Release list kept with the casting so the public Variants page can show
+   "4 of 28 releases" and the missing ones (no wiki calls from the public site). */
+function ciCompactVersions(versions) {
+  const list = (versions || []).map(({ year, series, color, wheel, toy, image }) => ({ year, series, color, wheel, toy, image }));
+  // Stay well under the worker's 64 KB limit for huge castings
+  return JSON.stringify(list).length > 45000 ? list.map(({ image, ...v }) => v) : list;
+}
+
+/* One-off: add release lists to matches confirmed before they were stored */
+async function ciBackfillReleases() {
+  const btn = document.getElementById('ciBackfillBtn');
+  const todo = [...ciRows.values()].filter(r => r.status === 'confirmed' && r.data?.casting?.url && !Array.isArray(r.data.casting.versions));
+  if (!todo.length) { btn.textContent = '✓ Release lists up to date'; return; }
+  if (!confirm(`Fetch release lists from the wiki for ${todo.length} confirmed cars? This takes about ${Math.ceil(todo.length * 1.2 / 60)} min — keep this tab open.`)) return;
+  btn.disabled = true;
+  let done = 0, failed = 0;
+  const titleCache = new Map();
+  for (const row of todo) {
+    btn.textContent = `Updating… ${done + failed}/${todo.length}`;
+    const { casting } = row.data;
+    const wiki = casting.url.includes('matchbox.fandom.com') ? 'matchbox' : 'hotwheels';
+    try {
+      const k = wiki + '|' + casting.title;
+      let versions = titleCache.get(k);
+      if (!versions) {
+        versions = ciCompactVersions((await ciLoadCasting(wiki, casting.title)).versions);
+        titleCache.set(k, versions);
+        await new Promise(r => setTimeout(r, 800));   // be gentle with the wiki
+      }
+      const data = { ...row.data, casting: { ...casting, versions } };
+      const res = await authFetch(`/admin/api/car-info/${row.car_id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'confirmed', data }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      ciRows.set(row.car_id, { ...row, data });
+      done++;
+    } catch (e) {
+      console.warn('release list failed for car', row.car_id, e);
+      failed++;
+    }
+  }
+  btn.disabled = false;
+  btn.textContent = failed ? `✓ ${done} updated · ${failed} failed (click to retry)` : `✓ ${done} release lists added`;
+}
+
 async function ciSave(status) {
   const st = ciState; if (!st) return;
   const c = st.casting;
   const data = status === 'skipped' ? null : {
-    casting: c ? { source: c.source, title: c.title, url: c.url, fields: c.fields } : null,
+    casting: c ? { source: c.source, title: c.title, url: c.url, fields: c.fields, versions: ciCompactVersions(c.versions) } : null,
     version: st.version ? (({ score, ...v }) => v)(st.version) : null,
     realCar: st.realCar ? { title: st.realCar.title, url: st.realCar.url, description: st.realCar.description, summary: st.realCar.summary } : null,
   };

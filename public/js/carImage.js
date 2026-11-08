@@ -1,5 +1,5 @@
 // js/carImage.js — single source of truth for car image src + fallbacks
-import { APP_CONFIG } from './config.js';
+import { APP_CONFIG } from './config.js?v=2';
 
 export const PLACEHOLDER_IMG = APP_CONFIG.placeholderImage || 'images/default_placeholder.webp';
 export const INCOMING_IMG    = 'images/upcoming-placeholder-800.webp';

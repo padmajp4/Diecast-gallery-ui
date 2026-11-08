@@ -1,14 +1,15 @@
 // js/app.js
 
 import { initTheme } from './theme.js';
-import { initModal, showDetailsModal } from './modal.js?v=15';
-import { renderHome, renderAboutBrands } from './home.js?v=13';
-import { initAll, refreshAll } from './allCars.js?v=13';
-import { initExchange } from './exchange.js?v=10';
-import { renderBrandsHub, renderBrandPage } from './brands.js?v=18';
-import { renderSetsHub, renderSetPage, bustSetLogosCache } from './sets.js?v=10';
+import { initModal, showDetailsModal } from './modal.js?v=16';
+import { renderHome, renderAboutBrands } from './home.js?v=14';
+import { initAll, refreshAll } from './allCars.js?v=14';
+import { initExchange } from './exchange.js?v=11';
+import { renderBrandsHub, renderBrandPage } from './brands.js?v=19';
+import { renderSetsHub, renderSetPage, bustSetLogosCache } from './sets.js?v=11';
+import { renderVariantsHub, renderVariantPage } from './variants.js?v=1';
 import { carThumbAttrs, installCarImageFallback } from './carImage.js?v=3';
-import { APP_CONFIG } from './config.js';
+import { APP_CONFIG } from './config.js?v=2';
 
 installCarImageFallback();
 
@@ -20,6 +21,7 @@ const ROUTES = {
   "/garage": "all",
   "/brands": "brands",
   "/sets": "sets",
+  "/variants": "variants",
   "/exchange": "exchange",
   "/history": "about",
   "/about": "aboutme"
@@ -131,6 +133,7 @@ function showView(view, push = true) {
   if (view === 'about') renderAboutBrands();
   if (view === 'brands') renderBrandsHub(cars);
   if (view === 'sets') renderSetsHub(cars); // async, fire-and-forget is fine
+  if (view === 'variants') renderVariantsHub(cars);
 
   if (push) {
     const path = VIEW_TO_PATH[view] || "/";
@@ -181,6 +184,12 @@ function loadFromURL() {
     renderSetPage(cars, decodeURIComponent(setMatch[1]));
     return;
   }
+  const variantMatch = path.match(/^\/variants\/(.+)$/);
+  if (variantMatch) {
+    showView('variants', false);
+    renderVariantPage(cars, decodeURIComponent(variantMatch[1]));
+    return;
+  }
   const view = ROUTES[path] || "home";
   showView(view, false);
 }
@@ -196,6 +205,12 @@ window.addEventListener("popstate", e => {
   if (setMatch) {
     showView('sets', false);
     renderSetPage(cars, decodeURIComponent(setMatch[1]));
+    return;
+  }
+  const variantMatch = location.pathname.match(/^\/variants\/(.+)$/);
+  if (variantMatch) {
+    showView('variants', false);
+    renderVariantPage(cars, decodeURIComponent(variantMatch[1]));
     return;
   }
   const view = e.state?.view || ROUTES[location.pathname] || "home";
@@ -265,6 +280,12 @@ requestAnimationFrame(() => {
 function escapeHtml(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// In-app navigation to any route (used by links on home, car popup, variants…)
+window.appNavigate = path => {
+  history.pushState({ path }, "", path);
+  loadFromURL();
+};
 
 // Allow modal to be opened globally
 window.showDetails = (car) => showDetailsModal(car);

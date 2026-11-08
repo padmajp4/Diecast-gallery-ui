@@ -24,6 +24,7 @@ Hot Wheels, Matchbox, Tomica, Majorette, Mini GT — catalogue every car, share 
 | **Car pages** — photo carousel with thumbnails, colour chips, variants, specs, share links with a proper preview card, plus **casting info from the Hot Wheels / Matchbox wikis** and the **real car from Wikipedia**. | ![Car details](docs/screenshots/details.webp) |
 | **Brands** — one page per real-car manufacturer, with logos and stats. | ![Brands](docs/screenshots/brands.webp) |
 | **Sets** — themed sets and multipacks with logos and completion bars. | ![Sets](docs/screenshots/sets.webp) |
+| **Variants** — every car you own in several versions (same **Model**) side by side, with a **release tracker**: "4 of 28 releases" and the ones you're missing, from the casting's wiki page. | |
 | **⌘K search** — jump to any car from anywhere. | ![Search](docs/screenshots/search.webp) |
 
 **Built for phones too** — a bottom dock, swipeable photos and a full-screen car view:
@@ -39,7 +40,7 @@ A password-protected `/admin` to run the collection from your phone or laptop �
 | ![Manage cars](docs/screenshots/admin-manage.webp) | ![Add car](docs/screenshots/admin-add.webp) | ![Car Info](docs/screenshots/admin-carinfo.webp) |
 | Search, filter, sort by last updated, bulk edit, duplicate, undo delete. | Photos are resized, converted to WebP and given a thumbnail **in your browser** before upload (HEIC from iPhones works). | **Car Info** finds the casting on the wiki, ranks every release by year and colour (even Italian names like *Rosso* or *Giallo*), and lets you confirm yours by comparing photos. Only confirmed matches appear on the site. |
 
-Also: set logos, CSV bulk import, a "⚠ Needs check" list that flags suspicious matches.
+Also: set logos, CSV bulk import, a "⚠ Needs check" list that flags suspicious matches, a **Featured cut-out** upload for the home banner (transparent PNG/WebP, kept transparent), and a **Variants** tab that suggests cars that should be grouped under one Model.
 
 ---
 
@@ -184,6 +185,7 @@ Images are stored at `images/cars/<name>` in your GitHub repo, with a 480 px cop
 | GET | `/api/cars/:id` | — | One car |
 | GET | `/api/set-logos` | — | `{ "Set name": "logo url" }` |
 | GET | `/api/car-info/:id` | — | Confirmed wiki info for a car, or `null` |
+| GET | `/api/car-info?ids=1,2,3` | — | Confirmed wiki info for several cars (max 100) |
 | GET | `/img/images/…` | — | Image from the GitHub repo, cached for a year |
 | GET | `/sitemap.xml` | — | Every page, brand, set and car |
 | GET | `/admin/api/ping` | ✔ | `{ ok: true }` — used by the login screen |
@@ -212,11 +214,13 @@ public/                  ← deployed to Cloudflare Pages
 │   ├── modal.js         car page, carousel, wiki info
 │   ├── brands.js        manufacturer hub + pages
 │   ├── sets.js          sets hub + pages
+│   ├── variants.js      variants hub + model pages + release tracker
+│   ├── scrollLock.js    keeps the page still behind popups
 │   ├── exchange.js      duplicates
 │   ├── carImage.js      thumbnails + image fallbacks
 │   ├── theme.js         light / dark
 │   └── site.js          page-level extras (analytics goes here)
-├── admin/               admin panel (index.html, carinfo.js)
+├── admin/               admin panel (index.html, carinfo.js, variants-admin.js)
 ├── data/sample-cars.json  demo data
 ├── images/, brand-logos/, gifters/
 └── _headers, _redirects security headers (CSP) + SPA routing
