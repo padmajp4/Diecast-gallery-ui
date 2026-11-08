@@ -1,4 +1,4 @@
-import { showDetailsModal } from './modal.js?v=13';
+import { showDetailsModal } from './modal.js?v=14';
 import { APP_CONFIG } from './config.js';
 import { carImageSrc, carThumbAttrs } from './carImage.js?v=3';
 import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
@@ -8,19 +8,19 @@ import { lockScroll, unlockScroll } from './scrollLock.js?v=1';
  * BRAND LOGOS
  ********************************************/
 const BRAND_LOGOS = {
-  "Hot Wheels": "brands/hotwheels.png",
-  "Matchbox": "brands/matchbox.png",
-  "Majorette": "brands/majorette.png",
-  "Tomica": "brands/tomica.png",
-  "Maisto": "brands/maisto.png",
-  "Greenlight": "brands/greenlight.png",
-  "Jada": "brands/jada.png",
-  "Welly": "brands/welly.png",
-  "Kinsmart": "brands/kinsmart.png",
-  "CCA": "brands/cca.png",
-  "Burago": "brands/burago.png",
-  "MiniGT": "brands/mini-gt.png" ,
-  "default": "brands/default.png"
+  "Hot Wheels": "brand-logos/hotwheels.png",
+  "Matchbox": "brand-logos/matchbox.png",
+  "Majorette": "brand-logos/majorette.png",
+  "Tomica": "brand-logos/tomica.png",
+  "Maisto": "brand-logos/maisto.png",
+  "Greenlight": "brand-logos/greenlight.png",
+  "Jada": "brand-logos/jada.png",
+  "Welly": "brand-logos/welly.png",
+  "Kinsmart": "brand-logos/kinsmart.png",
+  "CCA": "brand-logos/cca.png",
+  "Burago": "brand-logos/burago.png",
+  "MiniGT": "brand-logos/mini-gt.png" ,
+  "default": "brand-logos/default.png"
 };
 
 let hofCars = [];

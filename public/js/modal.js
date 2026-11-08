@@ -131,18 +131,18 @@ export function showDetailsModal(car) {
 
   /*************** BRAND LOGO ***************/
   const brandLogos = {
-    "Hot Wheels": "brands/hotwheels.png",
-    "Matchbox": "brands/matchbox.png",
-    "Majorette": "brands/majorette.png",
-    "Tomica": "brands/tomica.png",
-    "Maisto": "brands/maisto.png",
-    "Greenlight": "brands/greenlight.png",
-    "Burago": "brands/burago.png",
-    "Welly": "brands/welly.png",
-    "Kinsmart": "brands/kinsmart.png",
-    "CCA": "brands/cca.png",
-    "MiniGT": "brands/mini-gt.png" ,
-    default: "brands/default.png"
+    "Hot Wheels": "brand-logos/hotwheels.png",
+    "Matchbox": "brand-logos/matchbox.png",
+    "Majorette": "brand-logos/majorette.png",
+    "Tomica": "brand-logos/tomica.png",
+    "Maisto": "brand-logos/maisto.png",
+    "Greenlight": "brand-logos/greenlight.png",
+    "Burago": "brand-logos/burago.png",
+    "Welly": "brand-logos/welly.png",
+    "Kinsmart": "brand-logos/kinsmart.png",
+    "CCA": "brand-logos/cca.png",
+    "MiniGT": "brand-logos/mini-gt.png" ,
+    default: "brand-logos/default.png"
   };
   const brandImg = brandLogos[car.brand] || brandLogos.default;
 

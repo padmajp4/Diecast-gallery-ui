@@ -145,7 +145,7 @@ CAR_COLOURS: { "red": "#dc2626", "blue black": ["#2563eb", "#1c1c1c"], … },
 | About page text, photo, social links | `#view-aboutme` in `public/index.html` |
 | Logo / favicons / share image | `public/images/logo.webp`, `public/favicon*`, `public/apple-touch-icon.png`, `public/og-image.webp` |
 | "No photo" image | `public/images/default_placeholder.webp` (or `placeholderImage` in `config.js`) |
-| Toy-brand logos (Hot Wheels, Matchbox…) | `public/brands/*.png` + the `BRAND_LOGOS` map in `js/home.js` and `js/modal.js` |
+| Toy-brand logos (Hot Wheels, Matchbox…) | `public/brand-logos/*.png` + the `BRAND_LOGOS` map in `js/home.js` and `js/modal.js` |
 | Manufacturer logos (Ferrari, Nissan…) | `public/images/manufacturer-logos/` + `BRAND_LOGO_FILE` / `BRAND_THEME` in `js/brands.js` |
 | Colours, fonts, layout | `public/styles.css`, then `npm run build:css` (the site loads `styles.min.css`) |
 | Analytics / cookie banner | `public/js/site.js`, and allow its domains in `public/_headers` (Content-Security-Policy) |
@@ -218,7 +218,7 @@ public/                  ← deployed to Cloudflare Pages
 │   └── site.js          page-level extras (analytics goes here)
 ├── admin/               admin panel (index.html, carinfo.js)
 ├── data/sample-cars.json  demo data
-├── images/, brands/, gifters/
+├── images/, brand-logos/, gifters/
 └── _headers, _redirects security headers (CSP) + SPA routing
 worker/
 ├── index.js             the Worker (API, admin API, image proxy, sitemap, OG tags)

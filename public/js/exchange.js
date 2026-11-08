@@ -1,5 +1,5 @@
 // js/exchange.js
-import { showDetailsModal } from './modal.js?v=13';
+import { showDetailsModal } from './modal.js?v=14';
 import { carThumbAttrs } from './carImage.js?v=3';
 
 let exchangeCars = [];

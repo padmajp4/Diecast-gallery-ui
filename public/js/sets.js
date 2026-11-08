@@ -1,6 +1,6 @@
 // js/sets.js — Sets hub + individual set pages
 
-import { showDetailsModal } from './modal.js?v=13';
+import { showDetailsModal } from './modal.js?v=14';
 import { fallbackCarImage, carThumbAttrs, thumbOf } from './carImage.js?v=3';
 
 function esc(s) {

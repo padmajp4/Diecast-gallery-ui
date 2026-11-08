@@ -1,2 +1,12 @@
-
-/*  /index.html  200
+# Pages of the single-page app → serve the app (rewrite, so the URL stays as-is).
+# Target "/" rather than "/index.html": Pages redirects /index.html → /, which
+# would turn these rewrites into redirects to the home page.
+# Anything else falls through to 404.html with a real 404 status.
+/garage        /  200
+/brands        /  200
+/brands/:make  /  200
+/sets          /  200
+/sets/:set     /  200
+/exchange      /  200
+/history       /  200
+/about         /  200

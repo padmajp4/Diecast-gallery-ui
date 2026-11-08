@@ -105,12 +105,9 @@ export default {
     if (carParam)
       return handleOgInjection(request, env, ctx, carParam);
 
-    // Pass through to Pages — SPA fallback on 404
-    const pagesResp = await fetch(new Request(toOrigin(request), request));
-    if (pagesResp.status === 404) {
-      return fetch(`${ORIGIN_URL}/index.html`);
-    }
-    return pagesResp;
+    // Pass through to Pages. App routes are rewritten to index.html by _redirects;
+    // unknown paths get Pages' 404.html with a real 404 status (no soft 404s).
+    return fetch(new Request(toOrigin(request), request));
   },
 };
 
