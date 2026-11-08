@@ -1009,7 +1009,12 @@ async function toDecodable(file) {
     return file;
   } catch {
     const heic2any = await loadHeic2Any();
-    const result = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+    // heic2any converts in a worker; if that worker dies (e.g. blocked by the CSP) its
+    // promise never settles — give up after 60s so the photo shows an error, not "Processing…"
+    const result = await Promise.race([
+      heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('HEIC conversion timed out')), 60000)),
+    ]);
     const blob = Array.isArray(result) ? result[0] : result;
     return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
   }
